@@ -5,25 +5,36 @@ using UnityEngine;
 public class Bar_Chart_Controller : MonoBehaviour
 {
     private int[] temps = {54, 46, 34, 50, 24, 26, 88, 63, 73};
+    private float max = 88;
+
     [SerializeField] private float WIDTH, HEIGHT;
     [SerializeField] private float barWidth = 1f, barDepth = 1f;
-    [SerializeField] private float gap = 0.5f;
+     private float gap;
     
     [SerializeField] Bar bar;
     // Start is called before the first frame update
     void Start()
     {
+        //calculate the gap between the bars
+        gap = (WIDTH - barWidth * temps.Length) / (temps.Length + 1);
+
+        float startX = -WIDTH / 2f;
+        float accum = startX;
+
+
         Vector3[] positions = new Vector3[temps.Length];
 
         for(int i = 0; i < temps.Length; i++){
+            float barHeight = temps[i] / max * HEIGHT;
             Debug.Log("inside for loop " + i);
             Bar pos = Instantiate(bar);
-            pos.SetDimension(new Vector3(1f, temps[i], 1f));
-            pos.gameObject.transform.position = new Vector3(pos.gameObject.transform.position.x + i * 2, 
-            pos.gameObject.transform.position.y + pos.gameObject.transform.localScale.y / 2,
-            pos.gameObject.transform.position.z);
+            pos.SetDimension(new Vector3(1f, barHeight, 1f));
+            pos.gameObject.transform.position = new Vector3(accum + pos.gameObject.transform.localScale.x / 2, 
+                                                            pos.gameObject.transform.position.y + pos.gameObject.transform.localScale.y / 2,
+                                                            pos.gameObject.transform.position.z);
+            accum += (barWidth + 2 * gap);
         }
-        Debug.Log("Congratulations we just instantiated a fucking bar");
+        
     }
 
     // Update is called once per frame
