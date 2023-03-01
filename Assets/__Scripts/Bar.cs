@@ -8,11 +8,18 @@ public class Bar : MonoBehaviour
     private float width, height, depth;
     private GameObject bar;
     // Start is called before the first frame update
+
+    public void SetDimension(Vector3 dim){
+        width = dim.x;
+        height = dim.y;
+        depth = dim.z;
+        Vector3 scaleChange = new Vector3(width - transform.localScale.x, height - transform.localScale.y, depth - transform.localScale.z);
+        transform.localScale += scaleChange;
+    }
     void Start()
     {
 
-        Vector3 scaleChange = new Vector3(width - transform.localScale.x, height - transform.localScale.y, depth - transform.localScale.z);
-        transform.localScale += scaleChange;
+        
 /* 
         bar = GetComponent<GameObject>();
         transform.localScale.x = width;
