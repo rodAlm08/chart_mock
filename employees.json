@@ -1,16 +1,24 @@
 {
-  "employees":
-  [
+  "employees": [
     {
-      "firstName": "John",
+      "fineMotor": {
+        "accuracy": 0.5
+      },
+      "firstName": 22254.25,
       "lastName": "Doe"
     },
     {
-      "firstName": "Anna",
+      "fineMotor": {
+        "accuracy": 0.5
+      },
+      "firstName": 55.23,
       "lastName": "Smith"
     },
     {
-      "firstName": "Peter",
+      "fineMotor": {
+        "accuracy": 0.5
+      },
+      "firstName": 8457.22,
       "lastName": "Jones"
     }
   ]

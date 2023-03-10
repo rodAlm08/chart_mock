@@ -15,25 +15,25 @@ using UnityEngine;
     public class FineMotor : Model
     {
         [JsonProperty("disappearTime")]
-        public string disappearTime;
-        [JsonProperty("individualShotInfo")]
-        public List<IndividualShotInfo> individualShotInfo = new List<IndividualShotInfo>();
+        public double disappearTime;
+    [JsonProperty("individualShotInfo")]
+    public IndividualShotInfo[] individualShotInfo;
         [JsonProperty("numShots")]
-        public string numShots;
+        public double numShots;
         [JsonProperty("numTargets")]
-        public string numTargets;
+        public double numTargets;
         [JsonProperty("accuracy")]
-        public string accuracy;
+        public double accuracy;
         [JsonProperty("headshots")]
-        public string headshots;
+        public double headshots;
         [JsonProperty("bodyShots")]
-        public string bodyShots;
+        public double bodyShots;
         [JsonProperty("avgTrackingTime")]
-        public string avgTrackingTime;
+        public double avgTrackingTime;
         [JsonProperty("avgDistanceFromPlayer")]
-        public string avgDistanceFromPlayer;
-
- /*       public string? disappearTime
+        public double avgDistanceFromPlayer;
+/*
+        public double? disappearTime
         {
             get => disappearTime;
             set => disappearTime = value;
@@ -45,43 +45,43 @@ using UnityEngine;
             set => indiv    xidualShotInfo = value as List<IndividualShotInfo>;
         }
 
-        public string? numShots
+        public double? numShots
         {
             get => numShots;
             set => numShots = value;
         }
 
-        public string? numTargets
+        public double? numTargets
         {
             get => numTargets;
             set => numTargets = value;
         }
 
-        public string? accuracy
+        public double? accuracy
         {
             get => accuracy;
             set => accuracy = value;
         }
 
-        public string? headshots
+        public double? headshots
         {
             get => headshots;
             set => headshots = value;
         }
 
-        public string? bodyShots
+        public double? bodyShots
         {
             get => bodyshots;
             set => bodyshots = value;
         }
 
-        public string? avgTrackingTime
+        public double? avgTrackingTime
         {
             get => avgTrackingTime;
             set => avgTrackingTime = value;
         }
 
-        public string? avgDistanceFromPlayer
+        public double? avgDistanceFromPlayer
         {
             get => avgDistanceFromPlayer;
             set => avgDistanceFromPlayer = value;
@@ -93,47 +93,47 @@ using UnityEngine;
     public class IndividualShotInfo : Model
     {
         [JsonProperty("collider")]
-        public string collider;
+        public double collider;
         [JsonProperty("distanceFromPlayer")]
-        public string distanceFromPlayer;
+        public double distanceFromPlayer;
         [JsonProperty("isHeadshot")]
-        public string isHeadshot;
+        public double isHeadshot;
         [JsonProperty("trackingTime")]
-        public string trackingTime;
+        public double trackingTime;
         [JsonProperty("posX")]
-        public string posX;
+        public double posX;
         [JsonProperty("posY")]
-        public string posY;
+        public double posY;
         [JsonProperty("posZ")]
-        public string posZ;
+        public double posZ;
         /*
-                public string collider
+                public double collider
                 {
                     get => collider;
                     set => collider = value;
                 }
 
-                public string? distanceFromPlayer
+                public double? distanceFromPlayer
                 {
                     get => distanceFromPlayer;
                     set => distanceFromPlayer = value;
                 }
 
-                public string? isHeadshot
+                public double? isHeadshot
                 {
                     get => isHeadshot;
                     set => isHeadshot = value;
                 }
 
-                public string? trackingTime
+                public double? trackingTime
                 {
                     get => trackingTime;
                     set => trackingTime = value;
                 }
 
-                public string? posX => posX;
-                public string? posY => posY;
-                public string? posZ => posZ;
+                public double? posX => posX;
+                public double? posY => posY;
+                public double? posZ => posZ;
 
                 public Vector3 position
                 {

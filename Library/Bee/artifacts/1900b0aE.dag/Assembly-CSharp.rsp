@@ -389,6 +389,7 @@
 "Assets/TextMesh Pro/Examples & Extras/Scripts/WarpTextExample.cs"
 "Assets/__Scripts/Bar.cs"
 "Assets/__Scripts/Controllers/Bar_Chart_Controller.cs"
+"Assets/__Scripts/Controllers/Boxer.cs"
 "Assets/__Scripts/Controllers/Employee.cs"
 "Assets/__Scripts/Controllers/Employees.cs"
 "Assets/__Scripts/Controllers/FineMotor.cs"

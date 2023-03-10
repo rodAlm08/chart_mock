@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 //using System.Diagnostics;
+//using System.Diagnostics;
 using System.IO;
 using System.Text;
 //using System.Diagnostics;
@@ -17,6 +18,8 @@ public class Bar_Chart_Controller : MonoBehaviour
     [SerializeField] private float barWidth = 1f, barDepth = 1f;
      private float gap;
     private string jjson = null;
+
+    private Employees employeesInJson;
     
     [SerializeField] Bar bar;
     // Start is called before the first frame update
@@ -28,18 +31,19 @@ public class Bar_Chart_Controller : MonoBehaviour
             //      List<Item> items = JsonConvert.DeserializeObject<List<Item>>(json);
         }
 
-        Employees employeesInJson = JsonUtility.FromJson<Employees>(jjson);
- //       Debug.Log("How many values ? :: ---------------- " + employeesInJson.accuracy + " I am : " + employeesInJson.headshots);
-        foreach (FineMotor employee in employeesInJson.player)
+        employeesInJson = JsonUtility.FromJson<Employees>(jjson);
+        //       Debug.Log("How many values ? :: ---------------- " + employeesInJson.accuracy + " I am : " + employeesInJson.headshots);
+        Debug.Log(jjson);
+        foreach (Boxer employee in employeesInJson.player)
         {
-            Debug.Log("Found employee: " + employee);// + " " + employee.lastName);
+            Debug.Log("Found employee: " + employee.fineMotor.accuracy);// + " " + employee.lastName);
         }
     }
     void Start()
     {
 
-        
-            
+
+  //      FineMotor[] arrays = employeesInJson.player;
         
         //calculate the gap between the bars
         gap = (WIDTH - barWidth * temps.Length) / (temps.Length + 1);
