@@ -16,8 +16,10 @@ public class Bar_Chart_Controller : MonoBehaviour
 {
     private int[] temps = {54, 46, 34, 50, 24, 26, 88, 63, 73};
     private float max = 88;
-    [SerializeField] private GameObject line;
+    [SerializeField] private GameObject fmAccLine;
+    [SerializeField] private GameObject fmAvgDistLine;
     private LineRenderer lineRendererFMAcc;
+    private LineRenderer lineRendererAvgDist;
     [SerializeField] private float WIDTH, HEIGHT; // Drawing canvas (Strictly speaking does not include spaces for drawing labels, legends, etc.)
     [SerializeField] private float barWidth = 1f, barDepth = 1f;
      private float gap;
@@ -44,17 +46,31 @@ public class Bar_Chart_Controller : MonoBehaviour
         }
       //  Debug.Log("Maximum value :----------------------------------------: " + getMaximumAndMinimum(fineMotorJson));
     }
-
-    private Vector2 getMaximumAndMinimum(TestsJSON playerJson)
+    public const int FM_ACCURACY = 0, FM_AVERAGE_DISTANCE = 1;
+    private Vector2 getMaximumAndMinimum(TestsJSON playerJson, int attribute)
     {
         TestsBoxer[] playerBoxer = playerJson.player;
         Array.Sort(playerBoxer, (a, b) =>
         {
             FineMotor fineA = a.fineMotor;
             FineMotor fineB = b.fineMotor;
+            if(attribute == FM_ACCURACY) 
             return (int)(fineB.avgTrackingTime - fineA.avgTrackingTime);
+            if (attribute == FM_AVERAGE_DISTANCE)
+            {
+                Debug.Log("Testing ================== " + fineA.avgDistanceFromPlayer + " =============== " + fineB.avgDistanceFromPlayer);
+                return (int)(fineB.avgDistanceFromPlayer - fineA.avgDistanceFromPlayer);
+            }
+            else return 0;
         });
-        return new Vector2((float)playerBoxer[0].fineMotor.avgTrackingTime, (float)playerBoxer[playerBoxer.Length - 1].fineMotor.avgTrackingTime);
+        if (attribute == FM_ACCURACY)
+        {
+            return new Vector2((float)playerBoxer[0].fineMotor.avgTrackingTime, (float)playerBoxer[playerBoxer.Length - 1].fineMotor.avgTrackingTime);
+        }
+        else if (attribute == FM_AVERAGE_DISTANCE)
+        {
+            return new Vector2((float)playerBoxer[0].fineMotor.avgDistanceFromPlayer, (float)playerBoxer[playerBoxer.Length - 1].fineMotor.avgDistanceFromPlayer);
+        }else return new Vector2();
     }
 
     private Dictionary<DateTime, TestsBoxer> getFineMotorTests(TestsJSON playerJson)
@@ -80,8 +96,14 @@ public class Bar_Chart_Controller : MonoBehaviour
     }
     void Start()
     {
-        lineRendererFMAcc = line.AddComponent<LineRenderer>();
-        
+
+
+        //     lineRendererFMAcc = GetComponent<LineRenderer>();
+        //    lineRendererAvgDist = GetComponent<LineRenderer>();
+
+        lineRendererFMAcc = fmAccLine.AddComponent<LineRenderer>();
+        lineRendererAvgDist = fmAvgDistLine.AddComponent<LineRenderer>();
+
         Dictionary<DateTime, TestsBoxer> data = getFineMotorTests(fineMotorJson);
 
 
@@ -91,8 +113,15 @@ public class Bar_Chart_Controller : MonoBehaviour
         lineRendererFMAcc.textureMode = LineTextureMode.RepeatPerSegment;
         lineRendererFMAcc.material.SetTextureScale("_MainTex", new Vector2(0.025f, 1f));
 
+        lineRendererAvgDist.widthMultiplier = 0.1f;
+        lineRendererAvgDist.material.color = new Color(255, 32, 32);
+        lineRendererAvgDist.textureMode = LineTextureMode.RepeatPerSegment;
+        lineRendererAvgDist.material.SetTextureScale("_MainTex", new Vector2(0.025f, 1f));
+
+
+
         Debug.Log("We are print " + data.Count + " data");
-        Vector2 minMax = getMaximumAndMinimum(fineMotorJson);
+        Vector2 minMax = getMaximumAndMinimum(fineMotorJson, FM_ACCURACY);
         float maxValue = minMax.x;
         float minValue = minMax.y;
 
@@ -116,7 +145,9 @@ public class Bar_Chart_Controller : MonoBehaviour
         gap = barWidth / 2f;
         barWidth /= 3f;
         int i = -1;
-        List<Vector3> positions = new List<Vector3>();   
+        int j = -1;
+        List<Vector3> accPositions = new List<Vector3>();
+        List<Vector3> avgDistPositions = new List<Vector3>();
         foreach(KeyValuePair<DateTime, TestsBoxer> pair in data)
         {
             DateTime timestamp = pair.Key;
@@ -125,17 +156,39 @@ public class Bar_Chart_Controller : MonoBehaviour
             {
                 Debug.Log("FineMotor = " + pair.Value.fineMotor);
                 double accuracy = pair.Value.fineMotor.accuracy;
+                double avgDistance = pair.Value.fineMotor.avgDistanceFromPlayer;
+                
+                float fmAccLineHeight = (float)(accuracy / 100 * HEIGHT);
 
-                float lineHeight = (float)(accuracy / 100 * HEIGHT);
+                Vector2 mnmx = getMaximumAndMinimum(fineMotorJson, FM_AVERAGE_DISTANCE);
+                float mn = mnmx.y;
+                float mx = mnmx.x;
+                Debug.Log("AVG --++++++++++++++++++++++++++++ " + mn + "  ===================== " + mx);
+
+                // float 
                 if (accuracy > Mathf.Epsilon)
                 {
                     //        lineRendererFMAcc.SetPosition(++i, new Vector3(accum, lineHeight, 0));
-
-                    Vector3 pos = new Vector3(accum, lineHeight, 0);
-                    positions.Add(pos);
-                    Debug.Log("Count ---------------------------- " + ++i + " -------------- " + pos);
+                    i++;
+                    Vector3 pos = new Vector3(accum, fmAccLineHeight, 0);
+                    accPositions.Add(pos);
+                    Debug.Log("Count ---------------------------- " + i + " -------------- " + pos);
                     lineRendererFMAcc.positionCount = i + 1;
                 }
+                if(avgDistance > Mathf.Epsilon)
+                {
+                    
+                    float fmAvgDistLineHeight = HEIGHT * (float)(avgDistance - mn) / (mx - mn);
+
+                    j++;
+                    Vector3 avgD = new Vector3(accum, fmAvgDistLineHeight, 0);
+                    avgDistPositions.Add(avgD);
+                    Debug.Log("County ------------------------ " + j + " --------------- " + avgD);
+                    Debug.Log("County " + avgDistance + " Height: " + fmAvgDistLineHeight);
+                    lineRendererAvgDist.positionCount = j + 1;
+                }
+
+
                 double avgTrackingTime = pair.Value.fineMotor.avgTrackingTime;
                 float barHeight = (float)(HEIGHT * (avgTrackingTime - minValue) / (maxValue - minValue));
                 Bar value = Instantiate(bar);
@@ -171,7 +224,8 @@ public class Bar_Chart_Controller : MonoBehaviour
             }
             accum += (barWidth + gap);
         }
-        lineRendererFMAcc.SetPositions(positions.ToArray());
+        lineRendererFMAcc.SetPositions(accPositions.ToArray());
+        lineRendererAvgDist.SetPositions(avgDistPositions.ToArray());
 /*        Debug.Log("Point count; " + lineRendererFMAcc.positionCount + positions.ToCommaSeparatedString());
         lineRendererFMAcc.Simplify(0f);
         Debug.Log("Point count; " + lineRendererFMAcc.positionCount + positions.ToCommaSeparatedString());
