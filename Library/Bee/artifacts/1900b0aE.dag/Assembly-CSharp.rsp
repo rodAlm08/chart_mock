@@ -388,12 +388,17 @@
 "Assets/TextMesh Pro/Examples & Extras/Scripts/VertexZoom.cs"
 "Assets/TextMesh Pro/Examples & Extras/Scripts/WarpTextExample.cs"
 "Assets/__Scripts/Bar.cs"
+"Assets/__Scripts/Controllers/Audio.cs"
 "Assets/__Scripts/Controllers/Bar_Chart_Controller.cs"
-"Assets/__Scripts/Controllers/Boxer.cs"
-"Assets/__Scripts/Controllers/Employee.cs"
-"Assets/__Scripts/Controllers/Employees.cs"
 "Assets/__Scripts/Controllers/FineMotor.cs"
+"Assets/__Scripts/Controllers/FineMotorContainer.cs"
 "Assets/__Scripts/Controllers/Model.cs"
+"Assets/__Scripts/Controllers/TestsBoxer.cs"
+"Assets/__Scripts/Controllers/TestsJSON.cs"
+"Assets/__Scripts/Controllers/TimeSecs.cs"
+"Assets/__Scripts/Controllers/TimeWrapper.cs"
+"Assets/__Scripts/Controllers/Visual.cs"
+"Assets/__Scripts/Controllers/VisualContainer.cs"
 -langversion:9.0
 
 /deterministic
