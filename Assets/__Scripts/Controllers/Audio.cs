@@ -18,7 +18,7 @@ using Newtonsoft.Json.Serialization;
         [JsonProperty("avgResponseTime")]
         public double avgResponseTime ;
         [JsonProperty("minSoundThreshold")]
-        public double minSoundThreshold ;
+        public double minSoundThreshold = 1000;
         [JsonProperty("numTargetsSpawned1")]
         public double numTargetsSpawned1 ;
         [JsonProperty("numTargetsSpawned2")]

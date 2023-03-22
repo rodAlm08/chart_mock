@@ -18,8 +18,10 @@ public class Bar_Chart_Controller : MonoBehaviour
     private float max = 88;
     [SerializeField] private GameObject fmAccLine;
     [SerializeField] private GameObject fmAvgDistLine;
+    [SerializeField] private GameObject audioThreshLine;
     private LineRenderer lineRendererFMAcc;
     private LineRenderer lineRendererAvgDist;
+    private LineRenderer lineRendererAudioThresh;
     [SerializeField] private float WIDTH, HEIGHT; // Drawing canvas (Strictly speaking does not include spaces for drawing labels, legends, etc.)
     [SerializeField] private float barWidth = 1f, barDepth = 1f;
      private float gap;
@@ -46,7 +48,7 @@ public class Bar_Chart_Controller : MonoBehaviour
         }
       //  Debug.Log("Maximum value :----------------------------------------: " + getMaximumAndMinimum(fineMotorJson));
     }
-    public const int FM_ACCURACY = 0, FM_AVERAGE_DISTANCE = 1;
+    public const int FM_ACCURACY = 0, FM_AVERAGE_DISTANCE = 1, AUDIO_THRESHOLD = 2;
     private Vector2 getMaximumAndMinimum(TestsJSON playerJson, int attribute)
     {
         TestsBoxer[] playerBoxer = playerJson.player;
@@ -54,12 +56,19 @@ public class Bar_Chart_Controller : MonoBehaviour
         {
             FineMotor fineA = a.fineMotor;
             FineMotor fineB = b.fineMotor;
-            if(attribute == FM_ACCURACY) 
-            return (int)(fineB.avgTrackingTime - fineA.avgTrackingTime);
-            if (attribute == FM_AVERAGE_DISTANCE)
+            if (attribute == FM_ACCURACY)
+                return (int)(fineB.avgTrackingTime - fineA.avgTrackingTime);
+            else if (attribute == FM_AVERAGE_DISTANCE)
             {
                 Debug.Log("Testing ================== " + fineA.avgDistanceFromPlayer + " =============== " + fineB.avgDistanceFromPlayer);
                 return (int)(fineB.avgDistanceFromPlayer - fineA.avgDistanceFromPlayer);
+            }
+            Audio audioA = a.audio;
+            Audio audioB = b.audio;
+            if (attribute == AUDIO_THRESHOLD)
+            {
+                Debug.Log("Audio wahala -------------------- " + audioA.minSoundThreshold + " --------------- " + audioB.minSoundThreshold);
+                return (int)(audioB.minSoundThreshold - audioA.minSoundThreshold);
             }
             else return 0;
         });
@@ -70,7 +79,11 @@ public class Bar_Chart_Controller : MonoBehaviour
         else if (attribute == FM_AVERAGE_DISTANCE)
         {
             return new Vector2((float)playerBoxer[0].fineMotor.avgDistanceFromPlayer, (float)playerBoxer[playerBoxer.Length - 1].fineMotor.avgDistanceFromPlayer);
-        }else return new Vector2();
+        }
+        else if (attribute == AUDIO_THRESHOLD) {
+            return new Vector2((float)playerBoxer[0].audio.minSoundThreshold, (float)playerBoxer[playerBoxer.Length - 1].audio.minSoundThreshold);
+        }
+        else return new Vector2();
     }
 
     private Dictionary<DateTime, TestsBoxer> getFineMotorTests(TestsJSON playerJson)
@@ -103,6 +116,7 @@ public class Bar_Chart_Controller : MonoBehaviour
 
         lineRendererFMAcc = fmAccLine.AddComponent<LineRenderer>();
         lineRendererAvgDist = fmAvgDistLine.AddComponent<LineRenderer>();
+        lineRendererAudioThresh = audioThreshLine.AddComponent<LineRenderer>();
 
         Dictionary<DateTime, TestsBoxer> data = getFineMotorTests(fineMotorJson);
 
@@ -117,6 +131,13 @@ public class Bar_Chart_Controller : MonoBehaviour
         lineRendererAvgDist.material.color = new Color(255, 32, 32);
         lineRendererAvgDist.textureMode = LineTextureMode.RepeatPerSegment;
         lineRendererAvgDist.material.SetTextureScale("_MainTex", new Vector2(0.025f, 1f));
+
+        lineRendererAudioThresh.widthMultiplier = 0.1f;
+        lineRendererAudioThresh.material.color = new Color(255, 255, 32);
+        lineRendererAudioThresh.textureMode = LineTextureMode.RepeatPerSegment;
+        lineRendererAudioThresh.material.SetTextureScale("_MainTex", new Vector2(0.025f, 1f));
+
+
 
 
 
@@ -146,8 +167,11 @@ public class Bar_Chart_Controller : MonoBehaviour
         barWidth /= 3f;
         int i = -1;
         int j = -1;
+        int k = -1;
         List<Vector3> accPositions = new List<Vector3>();
         List<Vector3> avgDistPositions = new List<Vector3>();
+        List<Vector3> minSoundPositions = new List<Vector3>();
+
         foreach(KeyValuePair<DateTime, TestsBoxer> pair in data)
         {
             DateTime timestamp = pair.Key;
@@ -198,6 +222,24 @@ public class Bar_Chart_Controller : MonoBehaviour
                 value.gameObject.transform.position.y + value.gameObject.transform.localScale.y / 2,
                                                                 value.gameObject.transform.position.z);
             }
+            if(pair.Value.audio != null)
+            {
+                
+                double minSoundThresh = pair.Value.audio.minSoundThreshold;
+                //Debug.Log("Audio = " + minSoundThresh);
+                minMax = getMaximumAndMinimum(fineMotorJson, AUDIO_THRESHOLD);
+                float min = minMax.y;
+                float max = minMax.x;
+                Debug.Log("Audio min ================================================== " + minMax);
+                if (minSoundThresh != 1000)
+                {
+                    float audioThreshLineHeight = HEIGHT * (float)(minSoundThresh - min) / (max - min);
+                    k++;
+                    Vector3 thresh = new Vector3(accum, audioThreshLineHeight, 0);
+                    minSoundPositions.Add(thresh);
+                    lineRendererAudioThresh.positionCount = k + 1;
+                }
+            }
             accum += barWidth;
             if(pair.Value.visual != null && pair.Value.visual.responseTimes != null)
             {
@@ -226,6 +268,7 @@ public class Bar_Chart_Controller : MonoBehaviour
         }
         lineRendererFMAcc.SetPositions(accPositions.ToArray());
         lineRendererAvgDist.SetPositions(avgDistPositions.ToArray());
+        lineRendererAudioThresh.SetPositions(minSoundPositions.ToArray());
 /*        Debug.Log("Point count; " + lineRendererFMAcc.positionCount + positions.ToCommaSeparatedString());
         lineRendererFMAcc.Simplify(0f);
         Debug.Log("Point count; " + lineRendererFMAcc.positionCount + positions.ToCommaSeparatedString());
