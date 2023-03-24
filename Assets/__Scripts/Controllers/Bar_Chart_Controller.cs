@@ -155,6 +155,7 @@ public class Bar_Chart_Controller : MonoBehaviour
      //   gap = (WIDTH - barWidth * temps.Length) / (temps.Length + 1);
 
         float startX = -WIDTH / 2f;
+        float startY = 0;
         float accum = startX;
 
         int maxDisplayable = 52;
@@ -182,7 +183,6 @@ public class Bar_Chart_Controller : MonoBehaviour
                 double accuracy = pair.Value.fineMotor.accuracy;
                 double avgDistance = pair.Value.fineMotor.avgDistanceFromPlayer;
                 
-                float fmAccLineHeight = (float)(accuracy / 100 * HEIGHT);
 
                 Vector2 mnmx = getMaximumAndMinimum(fineMotorJson, FM_AVERAGE_DISTANCE);
                 float mn = mnmx.y;
@@ -194,15 +194,17 @@ public class Bar_Chart_Controller : MonoBehaviour
                 {
                     //        lineRendererFMAcc.SetPosition(++i, new Vector3(accum, lineHeight, 0));
                     i++;
-                    Vector3 pos = new Vector3(accum, fmAccLineHeight, 0);
+                    startY = 0;
+                    float fmAccLineHeight = (float)(accuracy / 100 * HEIGHT);
+                    Vector3 pos = new Vector3(startY + accum, fmAccLineHeight, 0);
                     accPositions.Add(pos);
                     Debug.Log("Count ---------------------------- " + i + " -------------- " + pos);
                     lineRendererFMAcc.positionCount = i + 1;
                 }
                 if(avgDistance > Mathf.Epsilon)
                 {
-                    
-                    float fmAvgDistLineHeight = HEIGHT * (float)(avgDistance - mn) / (mx - mn);
+                    startY = mn * -1;
+                    float fmAvgDistLineHeight = startY + mn + HEIGHT * (float)(avgDistance - mn) / (mx - mn);
 
                     j++;
                     Vector3 avgD = new Vector3(accum, fmAvgDistLineHeight, 0);
@@ -230,10 +232,11 @@ public class Bar_Chart_Controller : MonoBehaviour
                 minMax = getMaximumAndMinimum(fineMotorJson, AUDIO_THRESHOLD);
                 float min = minMax.y;
                 float max = minMax.x;
+                startY = min * -1;
                 Debug.Log("Audio min ================================================== " + minMax);
-                if (minSoundThresh != 1000)
+                if (true)
                 {
-                    float audioThreshLineHeight = HEIGHT * (float)(minSoundThresh - min) / (max - min);
+                    float audioThreshLineHeight = startY + min + HEIGHT * (float)(minSoundThresh - min) / (max - min);
                     k++;
                     Vector3 thresh = new Vector3(accum, audioThreshLineHeight, 0);
                     minSoundPositions.Add(thresh);
