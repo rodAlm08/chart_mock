@@ -19,14 +19,18 @@ public class Bar_Chart_Controller : MonoBehaviour
     [SerializeField] private GameObject fmAccLine;
     [SerializeField] private GameObject fmAvgDistLine;
     [SerializeField] private GameObject audioThreshLine;
+    [SerializeField] private GameObject visualShotAccLine;
+    [SerializeField] private GameObject visualTargetAccLine;
     private LineRenderer lineRendererFMAcc;
     private LineRenderer lineRendererAvgDist;
     private LineRenderer lineRendererAudioThresh;
+    private LineRenderer lineRendererVisualShotAcc;
+    private LineRenderer lineRendererVisualTargetAcc;
     [SerializeField] private float WIDTH, HEIGHT; // Drawing canvas (Strictly speaking does not include spaces for drawing labels, legends, etc.)
     [SerializeField] private float barWidth = 1f, barDepth = 1f;
      private float gap;
     private string jjson = null;
-
+    
     private TestsJSON fineMotorJson;
     
     [SerializeField] Bar bar;
@@ -48,7 +52,7 @@ public class Bar_Chart_Controller : MonoBehaviour
         }
       //  Debug.Log("Maximum value :----------------------------------------: " + getMaximumAndMinimum(fineMotorJson));
     }
-    public const int FM_ACCURACY = 0, FM_AVERAGE_DISTANCE = 1, AUDIO_THRESHOLD = 2;
+    public const int FM_ACCURACY = 0, FM_AVERAGE_DISTANCE = 1, AUDIO_THRESHOLD = 2, VISUAL_SHOT_ACC = 3, VISUAL_TARGET_ACC = 4;
     private Vector2 getMaximumAndMinimum(TestsJSON playerJson, int attribute)
     {
         TestsBoxer[] playerBoxer = playerJson.player;
@@ -70,6 +74,17 @@ public class Bar_Chart_Controller : MonoBehaviour
                 Debug.Log("Audio wahala -------------------- " + audioA.minSoundThreshold + " --------------- " + audioB.minSoundThreshold);
                 return (int)(audioB.minSoundThreshold - audioA.minSoundThreshold);
             }
+            Visual visualA = a.visual;
+            Visual visualB = b.visual;
+            if (attribute == VISUAL_SHOT_ACC)
+            {
+                Debug.Log("Visual wahala ----------------- " + visualA.shotAccuracy + " ----------------- " + visualB.shotAccuracy);
+                return (int)(visualB.shotAccuracy - visualA.shotAccuracy);
+            } 
+            else if (attribute == VISUAL_TARGET_ACC){
+                Debug.Log("Visual wahala 1 ----------------- " + visualA.targetAccuracy + " ----------------- " + visualB.targetAccuracy);
+                return (int)(visualB.targetAccuracy - visualA.targetAccuracy);
+            }
             else return 0;
         });
         if (attribute == FM_ACCURACY)
@@ -82,6 +97,14 @@ public class Bar_Chart_Controller : MonoBehaviour
         }
         else if (attribute == AUDIO_THRESHOLD) {
             return new Vector2((float)playerBoxer[0].audio.minSoundThreshold, (float)playerBoxer[playerBoxer.Length - 1].audio.minSoundThreshold);
+        }
+        else if (attribute == VISUAL_SHOT_ACC)
+        {
+            return new Vector2((float)playerBoxer[0].visual.shotAccuracy, (float)playerBoxer[playerBoxer.Length - 1].visual.shotAccuracy);
+        }
+        else if (attribute == VISUAL_TARGET_ACC)
+        {
+            return new Vector2((float)playerBoxer[0].visual.targetAccuracy, (float)playerBoxer[playerBoxer.Length - 1].visual.targetAccuracy);
         }
         else return new Vector2();
     }
@@ -114,15 +137,24 @@ public class Bar_Chart_Controller : MonoBehaviour
         //     lineRendererFMAcc = GetComponent<LineRenderer>();
         //    lineRendererAvgDist = GetComponent<LineRenderer>();
 
-        lineRendererFMAcc = fmAccLine.AddComponent<LineRenderer>();
-        lineRendererAvgDist = fmAvgDistLine.AddComponent<LineRenderer>();
-        lineRendererAudioThresh = audioThreshLine.AddComponent<LineRenderer>();
+        /*      lineRendererFMAcc = fmAccLine.AddComponent<LineRenderer>();
+              lineRendererAvgDist = fmAvgDistLine.AddComponent<LineRenderer>();
+              lineRendererAudioThresh = audioThreshLine.AddComponent<LineRenderer>();
+              lineRendererVisualShotAcc = visualShotAccLine.AddComponent<LineRenderer>();
+      */
+
+        lineRendererFMAcc = fmAccLine.GetComponent<LineRenderer>();
+        lineRendererAvgDist = fmAvgDistLine.GetComponent<LineRenderer>();
+        lineRendererAudioThresh = audioThreshLine.GetComponent<LineRenderer>();
+        lineRendererVisualShotAcc = visualShotAccLine.GetComponent<LineRenderer>();
+        lineRendererVisualTargetAcc = visualTargetAccLine.GetComponent<LineRenderer>();
+
 
         Dictionary<DateTime, TestsBoxer> data = getFineMotorTests(fineMotorJson);
 
 
    //     lineRendererFMAcc.positionCount = data.Count;
-        lineRendererFMAcc.widthMultiplier = 0.1f;
+    /*    lineRendererFMAcc.widthMultiplier = 0.1f;
         lineRendererFMAcc.material.color = Color.red;
         lineRendererFMAcc.textureMode = LineTextureMode.RepeatPerSegment;
         lineRendererFMAcc.material.SetTextureScale("_MainTex", new Vector2(0.025f, 1f));
@@ -137,7 +169,11 @@ public class Bar_Chart_Controller : MonoBehaviour
         lineRendererAudioThresh.textureMode = LineTextureMode.RepeatPerSegment;
         lineRendererAudioThresh.material.SetTextureScale("_MainTex", new Vector2(0.025f, 1f));
 
-
+        lineRendererVisualShotAcc.widthMultiplier = 0.1f;
+        lineRendererVisualShotAcc.material.color = new Color(32, 255, 255);
+        lineRendererVisualShotAcc.textureMode = LineTextureMode.RepeatPerSegment;
+        lineRendererVisualShotAcc.material.SetTextureScale("_MainTex", new Vector2(0.025f, 1f));
+*/
 
 
 
@@ -169,9 +205,13 @@ public class Bar_Chart_Controller : MonoBehaviour
         int i = -1;
         int j = -1;
         int k = -1;
+        int l = -1;
+        int m = -1;
         List<Vector3> accPositions = new List<Vector3>();
         List<Vector3> avgDistPositions = new List<Vector3>();
         List<Vector3> minSoundPositions = new List<Vector3>();
+        List<Vector3> visualShotAccPos = new List<Vector3>();
+        List<Vector3> visualTargetAccPos = new List<Vector3>();
 
         foreach(KeyValuePair<DateTime, TestsBoxer> pair in data)
         {
@@ -224,7 +264,8 @@ public class Bar_Chart_Controller : MonoBehaviour
                 value.gameObject.transform.position.y + value.gameObject.transform.localScale.y / 2,
                                                                 value.gameObject.transform.position.z);
             }
-            if(pair.Value.audio != null)
+            if(pair.Value.audio != null )
+                
             {
                 
                 double minSoundThresh = pair.Value.audio.minSoundThreshold;
@@ -233,7 +274,7 @@ public class Bar_Chart_Controller : MonoBehaviour
                 float min = minMax.y;
                 float max = minMax.x;
                 startY = min * -1;
-                Debug.Log("Audio min ================================================== " + minMax);
+                Debug.Log("Audio min ================================================== " + minMax + "treshhold >>>>>>>>" + minSoundThresh);
                 if (true)
                 {
                     float audioThreshLineHeight = startY + min + HEIGHT * (float)(minSoundThresh - min) / (max - min);
@@ -244,16 +285,47 @@ public class Bar_Chart_Controller : MonoBehaviour
                 }
             }
             accum += barWidth;
-            if(pair.Value.visual != null && pair.Value.visual.responseTimes != null)
+            if(pair.Value.visual != null)
             {
-                double avgResponseTime = pair.Value.visual.getAverageResponseTime();
-                float barHeight = (float)(HEIGHT * (avgResponseTime - minValue) / (maxValue - minValue));
-                Bar value = Instantiate(bar);
-                value.GetComponent<Renderer>().material.color = Color.blue;
-                value.SetDimension(new Vector3(barWidth, barHeight, 0.25f));
-                value.gameObject.transform.position = new Vector3(accum + value.gameObject.transform.localScale.x / 2,
-                value.gameObject.transform.position.y + value.gameObject.transform.localScale.y / 2,
-                                                                value.gameObject.transform.position.z);
+                double visualShotAcc = pair.Value.visual.shotAccuracy;
+                if (visualShotAcc > Mathf.Epsilon)
+                {
+                    startY = 0;
+                    float visualShotAccHeight = (float)(visualShotAcc / 100 * HEIGHT);
+
+                    l++;
+                    Vector3 shotAcc = new Vector3(accum, visualShotAccHeight, 0);
+                    visualShotAccPos.Add(shotAcc);
+                    Debug.Log("County ------------------------ " + l + " --------------- " + shotAcc);
+                    Debug.Log("County " + visualShotAcc + " Height: " + visualShotAccHeight);
+                    lineRendererVisualShotAcc.positionCount = l + 1;
+                }
+
+                double visualTargetAcc = pair.Value.visual.targetAccuracy;
+                if (visualTargetAcc > Mathf.Epsilon)
+                {
+                    startY = 0;
+                    float visualTargetAccHeight = (float)(visualTargetAcc / 100 * HEIGHT);
+
+                    m++;
+                    Vector3 targetAcc = new Vector3(accum, visualTargetAccHeight, 0);
+                    visualTargetAccPos.Add(targetAcc);
+                    Debug.Log("Mounty ------------------------ " + m + " --------------- " + targetAcc);
+                    Debug.Log("Mounty " + visualTargetAcc + " Height: " + visualTargetAccHeight);
+                    lineRendererVisualTargetAcc.positionCount = m + 1;
+                }
+
+                if (pair.Value.visual.responseTimes != null) {
+                    double avgResponseTime = pair.Value.visual.getAverageResponseTime();
+                    float barHeight = (float)(HEIGHT * (avgResponseTime - minValue) / (maxValue - minValue));
+                    Bar value = Instantiate(bar);
+                    value.GetComponent<Renderer>().material.color = Color.blue;
+                    value.SetDimension(new Vector3(barWidth, barHeight, 0.25f));
+                    value.gameObject.transform.position = new Vector3(accum + value.gameObject.transform.localScale.x / 2,
+                    value.gameObject.transform.position.y + value.gameObject.transform.localScale.y / 2,
+                                                                    value.gameObject.transform.position.z);
+                }
+
             }
             accum += barWidth;
             if (pair.Value.audio != null)
@@ -272,6 +344,8 @@ public class Bar_Chart_Controller : MonoBehaviour
         lineRendererFMAcc.SetPositions(accPositions.ToArray());
         lineRendererAvgDist.SetPositions(avgDistPositions.ToArray());
         lineRendererAudioThresh.SetPositions(minSoundPositions.ToArray());
+        lineRendererVisualShotAcc.SetPositions(visualShotAccPos.ToArray());
+        lineRendererVisualTargetAcc.SetPositions(visualTargetAccPos.ToArray());
 /*        Debug.Log("Point count; " + lineRendererFMAcc.positionCount + positions.ToCommaSeparatedString());
         lineRendererFMAcc.Simplify(0f);
         Debug.Log("Point count; " + lineRendererFMAcc.positionCount + positions.ToCommaSeparatedString());

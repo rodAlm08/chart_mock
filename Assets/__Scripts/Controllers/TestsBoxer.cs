@@ -5,8 +5,8 @@ using UnityEngine;
 [Serializable]
 public class TestsBoxer 
 {
-    public FineMotor fineMotor;
-    public Visual visual;
-    public Audio audio;
-    public TimeWrapper timestamp;
+    public FineMotor fineMotor= null;
+    public Visual visual= null;
+    public Audio audio = null;
+    public TimeWrapper timestamp= null;
 }
