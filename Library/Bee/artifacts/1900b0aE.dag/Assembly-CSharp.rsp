@@ -390,6 +390,7 @@
 "Assets/__Scripts/Bar.cs"
 "Assets/__Scripts/Controllers/Audio.cs"
 "Assets/__Scripts/Controllers/Bar_Chart_Controller.cs"
+"Assets/__Scripts/Controllers/BottomPanel.cs"
 "Assets/__Scripts/Controllers/FineMotor.cs"
 "Assets/__Scripts/Controllers/FineMotorContainer.cs"
 "Assets/__Scripts/Controllers/Model.cs"
