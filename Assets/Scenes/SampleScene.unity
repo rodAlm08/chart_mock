@@ -3468,7 +3468,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   labelPrefab: {fileID: 3392173324646959821, guid: 36ea607aedaedb444bf4ffcf2d711a53, type: 3}
-  xTickPrefab: {fileID: 3895804082529929419, guid: a25aca7c7f8232b4eb64c66f4086e9bd, type: 3}
+  xTickPrefab: {fileID: 7210556372425466331, guid: a25aca7c7f8232b4eb64c66f4086e9bd, type: 3}
 --- !u!1 &1432366536
 GameObject:
   m_ObjectHideFlags: 0
