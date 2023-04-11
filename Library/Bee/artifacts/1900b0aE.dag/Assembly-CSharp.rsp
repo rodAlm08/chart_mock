@@ -393,6 +393,7 @@
 "Assets/__Scripts/Controllers/BottomPanel.cs"
 "Assets/__Scripts/Controllers/FineMotor.cs"
 "Assets/__Scripts/Controllers/FineMotorContainer.cs"
+"Assets/__Scripts/Controllers/LeftPanel.cs"
 "Assets/__Scripts/Controllers/Model.cs"
 "Assets/__Scripts/Controllers/TestsBoxer.cs"
 "Assets/__Scripts/Controllers/TestsJSON.cs"

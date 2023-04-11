@@ -14,6 +14,8 @@ using UnityEngine.UIElements;
 
 public class Bar_Chart_Controller : MonoBehaviour
 {
+    public static Vector2 MAX_MIN_FM_AVG_TRK_TIME, MAX_MIN_FM_AVG_DST, MAX_MIN_AUDIO_THRESH, MAX_MIN_AUDIO_AVG_RES_TIME;
+    
     private int[] temps = {54, 46, 34, 50, 24, 26, 88, 63, 73};
     private float max = 88;
     [SerializeField] private GameObject fmAccLine;
@@ -52,7 +54,7 @@ public class Bar_Chart_Controller : MonoBehaviour
         }
       //  Debug.Log("Maximum value :----------------------------------------: " + getMaximumAndMinimum(fineMotorJson));
     }
-    public const int FM_ACCURACY = 0, FM_AVERAGE_DISTANCE = 1, AUDIO_THRESHOLD = 2, VISUAL_SHOT_ACC = 3, VISUAL_TARGET_ACC = 4;
+    public const int FM_AVG_TRACK_TIME = 0, FM_AVERAGE_DISTANCE = 1, AUDIO_THRESHOLD = 2, VISUAL_SHOT_ACC = 3, VISUAL_TARGET_ACC = 4;
     private Vector2 getMaximumAndMinimum(TestsJSON playerJson, int attribute)
     {
         TestsBoxer[] playerBoxer = playerJson.player;
@@ -60,8 +62,9 @@ public class Bar_Chart_Controller : MonoBehaviour
         {
             FineMotor fineA = a.fineMotor;
             FineMotor fineB = b.fineMotor;
-            if (attribute == FM_ACCURACY)
+            if (attribute == FM_AVG_TRACK_TIME)
                 return (int)(fineB.avgTrackingTime - fineA.avgTrackingTime);
+            //    return (int)(fineB.accuracy - fineA.accuracy);
             else if (attribute == FM_AVERAGE_DISTANCE)
             {
                 Debug.Log("Testing ================== " + fineA.avgDistanceFromPlayer + " =============== " + fineB.avgDistanceFromPlayer);
@@ -87,8 +90,11 @@ public class Bar_Chart_Controller : MonoBehaviour
             }
             else return 0;
         });
-        if (attribute == FM_ACCURACY)
+        if (attribute == FM_AVG_TRACK_TIME)
         {
+           
+            Bar_Chart_Controller.MAX_MIN_FM_AVG_TRK_TIME = new Vector2((float)playerBoxer[0].fineMotor.avgTrackingTime, (float)playerBoxer[playerBoxer.Length - 1].fineMotor.avgTrackingTime);
+            Debug.Log("This is what i have: " + Bar_Chart_Controller.MAX_MIN_FM_AVG_TRK_TIME);
             return new Vector2((float)playerBoxer[0].fineMotor.avgTrackingTime, (float)playerBoxer[playerBoxer.Length - 1].fineMotor.avgTrackingTime);
         }
         else if (attribute == FM_AVERAGE_DISTANCE)
@@ -130,7 +136,7 @@ public class Bar_Chart_Controller : MonoBehaviour
         }
         return dict;
     }
-    void Start()
+    void OnEnable()
     {
 
 
@@ -178,15 +184,15 @@ public class Bar_Chart_Controller : MonoBehaviour
 
 
         Debug.Log("We are print " + data.Count + " data");
-        Vector2 minMax = getMaximumAndMinimum(fineMotorJson, FM_ACCURACY);
+        Vector2 minMax = getMaximumAndMinimum(fineMotorJson, FM_AVG_TRACK_TIME);
         float maxValue = minMax.x;
         float minValue = minMax.y;
 
-        Debug.Log("-------------------------   Max: " + maxValue + " Min: " + minValue);
+        Debug.Log("rODRIGO THE TINUBU OF BRAZIL -------------------------   Max: " + maxValue + " Min: " + minValue);
 
-        maxValue += (maxValue * 0.05f);
-        minValue -= (maxValue * 0.05f);
-        if(minValue < 0.0f) minValue = 0.0f;
+     //   maxValue += (maxValue * 0.05f);
+     //   minValue -= (maxValue * 0.05f);
+     //   if(minValue < 0.0f) minValue = 0.0f;
 
      //   gap = (WIDTH - barWidth * temps.Length) / (temps.Length + 1);
 
@@ -257,6 +263,7 @@ public class Bar_Chart_Controller : MonoBehaviour
 
                 double avgTrackingTime = pair.Value.fineMotor.avgTrackingTime;
                 float barHeight = (float)(HEIGHT * (avgTrackingTime - minValue) / (maxValue - minValue));
+                Debug.Log("Almighty Error: BarHeight " + barHeight + " for value: " + avgTrackingTime + " HEIGHT: " + HEIGHT);
                 Bar value = Instantiate(bar);
                 value.GetComponent<Renderer>().material.color = Color.red;
                 value.SetDimension(new Vector3(barWidth, barHeight, 0.25f));
