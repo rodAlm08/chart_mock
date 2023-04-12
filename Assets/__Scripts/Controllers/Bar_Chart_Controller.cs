@@ -99,9 +99,15 @@ public class Bar_Chart_Controller : MonoBehaviour
         }
         else if (attribute == FM_AVERAGE_DISTANCE)
         {
+            Bar_Chart_Controller.MAX_MIN_FM_AVG_DST = new Vector2((float)playerBoxer[0].fineMotor.avgDistanceFromPlayer, (float)playerBoxer[playerBoxer.Length - 1].fineMotor.avgDistanceFromPlayer);
+            Debug.Log("This is what i have: " + Bar_Chart_Controller.MAX_MIN_FM_AVG_DST);
+
             return new Vector2((float)playerBoxer[0].fineMotor.avgDistanceFromPlayer, (float)playerBoxer[playerBoxer.Length - 1].fineMotor.avgDistanceFromPlayer);
         }
         else if (attribute == AUDIO_THRESHOLD) {
+            Bar_Chart_Controller.MAX_MIN_AUDIO_THRESH = new Vector2((float)playerBoxer[0].audio.minSoundThreshold, (float)playerBoxer[playerBoxer.Length - 1].audio.minSoundThreshold);
+            Debug.Log("This is what i have: " + Bar_Chart_Controller.MAX_MIN_AUDIO_THRESH);
+
             return new Vector2((float)playerBoxer[0].audio.minSoundThreshold, (float)playerBoxer[playerBoxer.Length - 1].audio.minSoundThreshold);
         }
         else if (attribute == VISUAL_SHOT_ACC)
