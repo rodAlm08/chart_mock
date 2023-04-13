@@ -31,22 +31,24 @@ public class RightPanel : MonoBehaviour
 
         for (int i = 0; i < numberOfValues + 1; i++)
         {
+            float startingOffSet = i == 0 ? 5f : 0f;
             TextMeshProUGUI lb = Instantiate(labelPrefab);
             lb.transform.SetParent(transform, false);
             Debug.Log("Maximum AVG Distance : " + MAX_AVG_DISTANCE + " Value for i " + i + " = " );
             lb.text = ((i) * MAX_AVG_DISTANCE / numberOfValues).ToString("0.00");
-            lb.transform.position = new Vector3(avgDistanceXposition, start + (i * accum),  0);
+            lb.transform.position = new Vector3(avgDistanceXposition, startingOffSet + start + (i * accum),  0);
 
         }
 
         for (int i = 0; i < numberOfValues + 1; i++)
         {
+            float startingOffSet = i == 0 ? 5f : 0f;
             TextMeshProUGUI lb = Instantiate(labelPrefab);
             lb.transform.SetParent(transform, false);
             Debug.Log("audioooooooooo " + ((i) * MAX_SOUND / numberOfValues).ToString());
 
             lb.text = (MIN_SOUND + (i) * (MAX_SOUND - MIN_SOUND) / numberOfValues).ToString("0.00");
-            lb.transform.position = new Vector3(audioxPosition, start + (i * accum), 0);
+            lb.transform.position = new Vector3(audioxPosition, startingOffSet + start + (i * accum), 0);
 
 
         }

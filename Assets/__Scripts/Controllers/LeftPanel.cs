@@ -28,23 +28,26 @@ public class LeftPanel : MonoBehaviour
 
         for (int i = 0; i < numberOfValues + 1; i++)
         {
+            float startingOffSet = i == 0 ? 5f:0f;
+           
             TextMeshProUGUI lb = Instantiate(labelPrefab);
             lb.transform.SetParent(transform, false);
             Debug.Log("Maximum Time : " + MAX_TIME);
             lb.text = ((i) * MAX_TIME / numberOfValues).ToString("0.00");
             RectTransform rr = lb.GetComponent<RectTransform>();
-            lb.transform.position = new Vector3(timexPosition, start + (i * accum),  0);
+            lb.transform.position = new Vector3(timexPosition, startingOffSet + start + (i * accum),  0);
 
         }
 
         for (int i = 0; i < numberOfValues + 1; i++)
         {
+            float startingOffSet = i == 0 ? 5f : 0f;
             TextMeshProUGUI lb = Instantiate(labelPrefab);
             lb.transform.SetParent(transform, false);   
             Debug.Log("affffffff " + ((i) * MAX_ACCURACY / numberOfValues).ToString());
 
             lb.text = ((i) * MAX_ACCURACY / numberOfValues).ToString();
-            lb.transform.position = new Vector3(accuracyXposition, start + (i * accum), 0);
+            lb.transform.position = new Vector3(accuracyXposition, startingOffSet + start + (i * accum), 0);
           
 
         }

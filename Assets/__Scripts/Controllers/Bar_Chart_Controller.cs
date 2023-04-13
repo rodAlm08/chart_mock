@@ -15,7 +15,8 @@ using UnityEngine.UIElements;
 public class Bar_Chart_Controller : MonoBehaviour
 {
     public static Vector2 MAX_MIN_FM_AVG_TRK_TIME, MAX_MIN_FM_AVG_DST, MAX_MIN_AUDIO_THRESH, MAX_MIN_AUDIO_AVG_RES_TIME;
-    
+    public static TestsBoxer[] data;
+
     private int[] temps = {54, 46, 34, 50, 24, 26, 88, 63, 73};
     private float max = 88;
     [SerializeField] private GameObject fmAccLine;
@@ -60,6 +61,7 @@ public class Bar_Chart_Controller : MonoBehaviour
     private Vector2 getMaximumAndMinimum(TestsJSON playerJson, int attribute)
     {
         TestsBoxer[] playerBoxer = playerJson.player;
+
         Array.Sort(playerBoxer, (a, b) =>
         {
             FineMotor fineA = a.fineMotor;
@@ -126,6 +128,7 @@ public class Bar_Chart_Controller : MonoBehaviour
     private Dictionary<DateTime, TestsBoxer> getFineMotorTests(TestsJSON playerJson)
     {
         TestsBoxer[] boxers = playerJson.player;
+
         Array.Sort(boxers, (a, b) =>
         {
             TimeSecs tw1 = a.timestamp.value;
@@ -133,15 +136,21 @@ public class Bar_Chart_Controller : MonoBehaviour
             return DateTime.Compare(tw1.getTimeStamp(), tw2.getTimeStamp());
         });
 
-  //      Dictionary<DateTime, FineMotor> dict = new Dictionary<DateTime, FineMotor>();
+        Bar_Chart_Controller.data = new TestsBoxer[boxers.Length];
+
+        //      Dictionary<DateTime, FineMotor> dict = new Dictionary<DateTime, FineMotor>();
         Dictionary<DateTime, TestsBoxer> dict = new Dictionary<DateTime, TestsBoxer>();
         for(int i = 0; i < boxers.Length; i++)
         {
-       //     if(boxers[i].fineMotor != null)
-         //   {
-                dict.Add(boxers[i].timestamp.value.getTimeStamp(), boxers[i]);
+            //     if(boxers[i].fineMotor != null)
+            //   {
+            //Debug.Log("DIctionary Sorteddddddd i = "+i + "  " + data[i].timestamp.value.getTimeStamp() + "  "+data[i].timestamp.value.getTimeStamp().DayOfYear / 7  );
+
+            dict.Add(boxers[i].timestamp.value.getTimeStamp(), boxers[i]);
+            Bar_Chart_Controller.data[i] = boxers[i];
        //     }
         }
+        
         return dict;
     }
 
@@ -181,17 +190,6 @@ public class Bar_Chart_Controller : MonoBehaviour
     void OnEnable()
     {
 
-
-        //     lineRendererFMAcc = GetComponent<LineRenderer>();
-        //    lineRendererAvgDist = GetComponent<LineRenderer>();
-
-        /*      lineRendererFMAcc = fmAccLine.AddComponent<LineRenderer>();
-              lineRendererAvgDist = fmAvgDistLine.AddComponent<LineRenderer>();
-              lineRendererAudioThresh = audioThreshLine.AddComponent<LineRenderer>();
-              lineRendererVisualShotAcc = visualShotAccLine.AddComponent<LineRenderer>();
-      */
-
-     //   lineRendererGrid = gridLine.GetComponent<LineRenderer>();   
         lineRendererFMAcc = fmAccLine.GetComponent<LineRenderer>();
         lineRendererAvgDist = fmAvgDistLine.GetComponent<LineRenderer>();
         lineRendererAudioThresh = audioThreshLine.GetComponent<LineRenderer>();
@@ -200,30 +198,6 @@ public class Bar_Chart_Controller : MonoBehaviour
 
 
         Dictionary<DateTime, TestsBoxer> data = getFineMotorTests(fineMotorJson);
-
-
-   //     lineRendererFMAcc.positionCount = data.Count;
-    /*    lineRendererFMAcc.widthMultiplier = 0.1f;
-        lineRendererFMAcc.material.color = Color.red;
-        lineRendererFMAcc.textureMode = LineTextureMode.RepeatPerSegment;
-        lineRendererFMAcc.material.SetTextureScale("_MainTex", new Vector2(0.025f, 1f));
-
-        lineRendererAvgDist.widthMultiplier = 0.1f;
-        lineRendererAvgDist.material.color = new Color(255, 32, 32);
-        lineRendererAvgDist.textureMode = LineTextureMode.RepeatPerSegment;
-        lineRendererAvgDist.material.SetTextureScale("_MainTex", new Vector2(0.025f, 1f));
-
-        lineRendererAudioThresh.widthMultiplier = 0.1f;
-        lineRendererAudioThresh.material.color = new Color(255, 255, 32);
-        lineRendererAudioThresh.textureMode = LineTextureMode.RepeatPerSegment;
-        lineRendererAudioThresh.material.SetTextureScale("_MainTex", new Vector2(0.025f, 1f));
-
-        lineRendererVisualShotAcc.widthMultiplier = 0.1f;
-        lineRendererVisualShotAcc.material.color = new Color(32, 255, 255);
-        lineRendererVisualShotAcc.textureMode = LineTextureMode.RepeatPerSegment;
-        lineRendererVisualShotAcc.material.SetTextureScale("_MainTex", new Vector2(0.025f, 1f));
-*/
-
 
 
         Debug.Log("We are print " + data.Count + " data");
