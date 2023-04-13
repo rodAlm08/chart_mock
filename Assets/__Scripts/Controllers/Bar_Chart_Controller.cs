@@ -23,11 +23,13 @@ public class Bar_Chart_Controller : MonoBehaviour
     [SerializeField] private GameObject audioThreshLine;
     [SerializeField] private GameObject visualShotAccLine;
     [SerializeField] private GameObject visualTargetAccLine;
+    [SerializeField] private LineRenderer gridLinePrefab;
     private LineRenderer lineRendererFMAcc;
     private LineRenderer lineRendererAvgDist;
     private LineRenderer lineRendererAudioThresh;
     private LineRenderer lineRendererVisualShotAcc;
     private LineRenderer lineRendererVisualTargetAcc;
+ //   private LineRenderer lineRendererGrid;
     [SerializeField] private float WIDTH, HEIGHT; // Drawing canvas (Strictly speaking does not include spaces for drawing labels, legends, etc.)
     [SerializeField] private float barWidth = 1f, barDepth = 1f;
      private float gap;
@@ -106,7 +108,7 @@ public class Bar_Chart_Controller : MonoBehaviour
         }
         else if (attribute == AUDIO_THRESHOLD) {
             Bar_Chart_Controller.MAX_MIN_AUDIO_THRESH = new Vector2((float)playerBoxer[0].audio.minSoundThreshold, (float)playerBoxer[playerBoxer.Length - 1].audio.minSoundThreshold);
-            Debug.Log("This is what i have: " + Bar_Chart_Controller.MAX_MIN_AUDIO_THRESH);
+            Debug.Log("This is what i have for AUDIO: " + Bar_Chart_Controller.MAX_MIN_AUDIO_THRESH);
 
             return new Vector2((float)playerBoxer[0].audio.minSoundThreshold, (float)playerBoxer[playerBoxer.Length - 1].audio.minSoundThreshold);
         }
@@ -142,6 +144,40 @@ public class Bar_Chart_Controller : MonoBehaviour
         }
         return dict;
     }
+
+
+    private void drawGrid(int numX, int numY)
+    {
+        GameObject obj = GameObject.FindGameObjectWithTag("Grid");
+        float startY = 0;// -HEIGHT / 2f;
+        float startX = -WIDTH / 2f;
+        float depth = 20f;
+        for (int i = 0; i < numX + 1; i++) {
+            LineRenderer gridLine = Instantiate(gridLinePrefab, obj.transform);
+
+            gridLine.positionCount = 4;
+
+            gridLine.SetPosition(0, new Vector3(startX, startY + (i * HEIGHT / numX), 0f));
+            gridLine.SetPosition(1, new Vector3(startX, startY + (i * HEIGHT / numX), depth));
+            gridLine.SetPosition(2, new Vector3(startX + WIDTH, startY + (i * HEIGHT / numX), depth));
+            gridLine.SetPosition(3, new Vector3(startX + WIDTH, startY + (i * HEIGHT / numX), 0f));
+
+       //     gridLine.positionCount = 4 + 1;
+
+        }
+        return;
+        for(int i = 0; i < numY + 1; i++)
+        {
+            LineRenderer gridLine = Instantiate(gridLinePrefab, obj.transform);
+            gridLine.positionCount = 4;
+            gridLine.SetPosition(0, new Vector3(startX + (i * WIDTH / numY), startY, 0f));
+            gridLine.SetPosition(1, new Vector3(startX + (i * WIDTH / numY), startY, depth));
+            gridLine.SetPosition(2, new Vector3(startX + (i * WIDTH / numY), startY + HEIGHT, depth));
+            gridLine.SetPosition(3, new Vector3(startX + (i * WIDTH / numY), startY + HEIGHT, 0f));
+        }
+    }
+
+
     void OnEnable()
     {
 
@@ -155,6 +191,7 @@ public class Bar_Chart_Controller : MonoBehaviour
               lineRendererVisualShotAcc = visualShotAccLine.AddComponent<LineRenderer>();
       */
 
+     //   lineRendererGrid = gridLine.GetComponent<LineRenderer>();   
         lineRendererFMAcc = fmAccLine.GetComponent<LineRenderer>();
         lineRendererAvgDist = fmAvgDistLine.GetComponent<LineRenderer>();
         lineRendererAudioThresh = audioThreshLine.GetComponent<LineRenderer>();
@@ -359,6 +396,8 @@ public class Bar_Chart_Controller : MonoBehaviour
         lineRendererAudioThresh.SetPositions(minSoundPositions.ToArray());
         lineRendererVisualShotAcc.SetPositions(visualShotAccPos.ToArray());
         lineRendererVisualTargetAcc.SetPositions(visualTargetAccPos.ToArray());
+
+        drawGrid(20, 52);
 /*        Debug.Log("Point count; " + lineRendererFMAcc.positionCount + positions.ToCommaSeparatedString());
         lineRendererFMAcc.Simplify(0f);
         Debug.Log("Point count; " + lineRendererFMAcc.positionCount + positions.ToCommaSeparatedString());

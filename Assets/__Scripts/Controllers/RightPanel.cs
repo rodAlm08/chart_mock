@@ -21,17 +21,19 @@ public class RightPanel : MonoBehaviour
         float accum = HEIGHT * 0.7f / (numberOfValues);
         float offset = 0;// accum / 2;
         float MAX_AVG_DISTANCE = Bar_Chart_Controller.MAX_MIN_FM_AVG_DST.x;
+
+        float MIN_SOUND = Bar_Chart_Controller.MAX_MIN_AUDIO_THRESH.y;
         float MAX_SOUND = Bar_Chart_Controller.MAX_MIN_AUDIO_THRESH.x;
 
-        float avgDistanceXposition = 9.25f * WIDTH;
-        float audioxPosition = 9.75f * WIDTH;
+        float avgDistanceXposition = transform.position.x - WIDTH / 2f + 0.25f * WIDTH;//9.25f * WIDTH;
+        float audioxPosition = transform.position.x - WIDTH / 2f + 0.75f * WIDTH;//9.75f * WIDTH;
 
 
         for (int i = 0; i < numberOfValues + 1; i++)
         {
             TextMeshProUGUI lb = Instantiate(labelPrefab);
             lb.transform.SetParent(transform, false);
-            Debug.Log("Maximum AVG Distance : " + MAX_AVG_DISTANCE + WIDTH);
+            Debug.Log("Maximum AVG Distance : " + MAX_AVG_DISTANCE + " Value for i " + i + " = " );
             lb.text = ((i) * MAX_AVG_DISTANCE / numberOfValues).ToString("0.00");
             lb.transform.position = new Vector3(avgDistanceXposition, start + (i * accum),  0);
 
@@ -43,7 +45,7 @@ public class RightPanel : MonoBehaviour
             lb.transform.SetParent(transform, false);
             Debug.Log("audioooooooooo " + ((i) * MAX_SOUND / numberOfValues).ToString());
 
-            lb.text = ((i) * MAX_SOUND / numberOfValues).ToString();
+            lb.text = (MIN_SOUND + (i) * (MAX_SOUND - MIN_SOUND) / numberOfValues).ToString("0.00");
             lb.transform.position = new Vector3(audioxPosition, start + (i * accum), 0);
 
 
