@@ -917,6 +917,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 8194688690517287114, guid: d426e643f6efbc04a9ff631c2327a80d, type: 3}
+      propertyPath: m_Texture
+      value: 
+      objectReference: {fileID: 2800000, guid: 755baaf43688191499ef42f51a70243a, type: 3}
+    - target: {fileID: 8194688690517287117, guid: d426e643f6efbc04a9ff631c2327a80d, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 44.7246
+      objectReference: {fileID: 0}
+    - target: {fileID: 8194688690517287117, guid: d426e643f6efbc04a9ff631c2327a80d, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 39.3111
+      objectReference: {fileID: 0}
+    - target: {fileID: 8194688690517287117, guid: d426e643f6efbc04a9ff631c2327a80d, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -119.4405
+      objectReference: {fileID: 0}
+    - target: {fileID: 8194688690517287117, guid: d426e643f6efbc04a9ff631c2327a80d, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 11.671
+      objectReference: {fileID: 0}
     - target: {fileID: 8194688691000059209, guid: d426e643f6efbc04a9ff631c2327a80d, type: 3}
       propertyPath: m_Pivot.x
       value: 0
