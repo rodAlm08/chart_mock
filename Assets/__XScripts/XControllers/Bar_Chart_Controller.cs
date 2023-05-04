@@ -239,8 +239,8 @@ public class Bar_Chart_Controller : MonoBehaviour
 
     public void DrawCharts()
     {
-
-        Vector2 minMax = getMaximumAndMinimum(Bar_Chart_Controller.fineMotorJson.player, FM_AVG_TRACK_TIME);
+        Debug.Log("WHat are you ??????????????? " + data + " Size " + data.Length + " Compared: " + fineMotorJson.player.Length + " And " + DictData.Count);
+        Vector2 minMax = getMaximumAndMinimum((TestsBoxer[])Bar_Chart_Controller.data.Clone(), FM_AVG_TRACK_TIME);
         float maxValue = minMax.x;
         float minValue = minMax.y;
         float startX = -WIDTH / 2f;
@@ -273,7 +273,7 @@ public class Bar_Chart_Controller : MonoBehaviour
             {
                 double accuracy = pair.Value.fineMotor.accuracy;
                 double avgDistance = pair.Value.fineMotor.avgDistanceFromPlayer;
-                Vector2 mnmx = getMaximumAndMinimum(Bar_Chart_Controller.fineMotorJson.player, FM_AVERAGE_DISTANCE);
+                Vector2 mnmx = getMaximumAndMinimum((TestsBoxer[])Bar_Chart_Controller.data.Clone(), FM_AVERAGE_DISTANCE);
                 float mn = mnmx.y;
                 float mx = mnmx.x;
                 if (accuracy > Mathf.Epsilon)
@@ -308,7 +308,7 @@ public class Bar_Chart_Controller : MonoBehaviour
             if (pair.Value.audio != null)
             {
                 double minSoundThresh = pair.Value.audio.minSoundThreshold;
-                minMax = getMaximumAndMinimum(Bar_Chart_Controller.fineMotorJson.player, AUDIO_THRESHOLD);
+                minMax = getMaximumAndMinimum((TestsBoxer[])Bar_Chart_Controller.data.Clone(), AUDIO_THRESHOLD);
                 float min = minMax.y;
                 float max = minMax.x;
                 startY = min * -1;
@@ -399,9 +399,13 @@ public class Bar_Chart_Controller : MonoBehaviour
     private Vector2 getMaximumAndMinimum(TestsBoxer[] playerBoxer, int attribute)
     {
         //    TestsBoxer[] playerBoxer = playerJson.player;
-
+        foreach(var a in playerBoxer)
+        {
+            Debug.Log("Idiot: " + a);
+        }
         Array.Sort(playerBoxer, (a, b) =>
         {
+            
             FineMotor fineA = a.fineMotor;
             FineMotor fineB = b.fineMotor;
             if (attribute == FM_AVG_TRACK_TIME)
@@ -434,6 +438,7 @@ public class Bar_Chart_Controller : MonoBehaviour
         {
 
             Bar_Chart_Controller.MAX_MIN_FM_AVG_TRK_TIME = new Vector2((float)playerBoxer[0].fineMotor.avgTrackingTime, (float)playerBoxer[playerBoxer.Length - 1].fineMotor.avgTrackingTime);
+            Debug.Log("FINE MOTOR MINMAX: " + MAX_MIN_FM_AVG_TRK_TIME);
             return new Vector2((float)playerBoxer[0].fineMotor.avgTrackingTime, (float)playerBoxer[playerBoxer.Length - 1].fineMotor.avgTrackingTime);
         }
         else if (attribute == FM_AVERAGE_DISTANCE)
@@ -469,15 +474,16 @@ public class Bar_Chart_Controller : MonoBehaviour
             TimeSecs tw2 = b.timestamp.value;
             return DateTime.Compare(tw1.getTimeStamp(), tw2.getTimeStamp());
         });
-        Bar_Chart_Controller.data = new TestsBoxer[boxers.Length];
+  //      Bar_Chart_Controller.data = new TestsBoxer[boxers.Length];
         Dictionary<DateTime, TestsBoxer> dict = new Dictionary<DateTime, TestsBoxer>();
         //      Bar_Chart_Controller.data = playerJson.player;
         for (int i = 0; i < boxers.Length; i++)
         {
             dict.Add(boxers[i].timestamp.value.getTimeStamp(), boxers[i]);
-            Bar_Chart_Controller.data[i] = boxers[i];
-            Debug.Log("Sorted Values From Controller: " + Bar_Chart_Controller.fineMotorJson.player[i].timestamp.value.getTimeStamp());
+   //         Bar_Chart_Controller.data[i] = boxers[i];
         }
+        Bar_Chart_Controller.data = dict.Values.ToArray();
+        
         return dict;
     }
 
@@ -490,15 +496,24 @@ public class Bar_Chart_Controller : MonoBehaviour
             TimeSecs tw2 = b.timestamp.value;
             return DateTime.Compare(tw1.getTimeStamp(), tw2.getTimeStamp());
         });
-        Bar_Chart_Controller.data = new TestsBoxer[boxers.Length];
+  //      Bar_Chart_Controller.data = new TestsBoxer[boxers.Length];
         Dictionary<DateTime, TestsBoxer> dict = new Dictionary<DateTime, TestsBoxer>();
         for (int i = 0; i < boxers.Length; i++)
         {
+            Debug.Log("StartDate: " + StartDate + " EndDate: " + EndDate + " MyDate: " + boxers[i].timestamp.value.getTimeStamp());
             if (boxers[i].timestamp.value.getTimeStamp() >= StartDate && boxers[i].timestamp.value.getTimeStamp() <= EndDate)
             {
+
                 dict.Add(boxers[i].timestamp.value.getTimeStamp(), boxers[i]);
-                Bar_Chart_Controller.data[i] = boxers[i];
+     //           Bar_Chart_Controller.data[i] = boxers[i];
+ //               Debug.Log("2nd Idiot " + data[i]);
+
             }
+        }
+        Bar_Chart_Controller.data = dict.Values.ToArray();
+        foreach(var a in data)
+        {
+            Debug.Log("A == " + a.timestamp.value.getTimeStamp());
         }
         return dict;
     }
