@@ -12,7 +12,7 @@ public class RightPanel : MonoBehaviour
     void Start()
     {
         RectTransform rect = GetComponent<RectTransform>();
-        Debug.Log("Right Panel Width      ----------------------------           " + rect.rect.width);
+ //       Debug.Log("Right Panel Width      ----------------------------           " + rect.rect.width);
         float WIDTH = rect.rect.width;
         float HEIGHT = rect.rect.height;
         float start = rect.rect.height * 0.25f;
@@ -34,7 +34,7 @@ public class RightPanel : MonoBehaviour
             float startingOffSet = i == 0 ? 5f : 0f;
             TextMeshProUGUI lb = Instantiate(labelPrefab);
             lb.transform.SetParent(transform, false);
-            Debug.Log("Maximum AVG Distance : " + MAX_AVG_DISTANCE + " Value for i " + i + " = " );
+    //        Debug.Log("Maximum AVG Distance : " + MAX_AVG_DISTANCE + " Value for i " + i + " = " );
             lb.text = ((i) * MAX_AVG_DISTANCE / numberOfValues).ToString("0.00");
             lb.transform.position = new Vector3(avgDistanceXposition, startingOffSet + start + (i * accum),  0);
 
@@ -45,7 +45,7 @@ public class RightPanel : MonoBehaviour
             float startingOffSet = i == 0 ? 5f : 0f;
             TextMeshProUGUI lb = Instantiate(labelPrefab);
             lb.transform.SetParent(transform, false);
-            Debug.Log("audioooooooooo " + ((i) * MAX_SOUND / numberOfValues).ToString());
+     //       Debug.Log("audioooooooooo " + ((i) * MAX_SOUND / numberOfValues).ToString());
 
             lb.text = (MIN_SOUND + (i) * (MAX_SOUND - MIN_SOUND) / numberOfValues).ToString("0.00");
             lb.transform.position = new Vector3(audioxPosition, startingOffSet + start + (i * accum), 0);

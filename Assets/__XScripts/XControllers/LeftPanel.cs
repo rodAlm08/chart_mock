@@ -12,7 +12,7 @@ public class LeftPanel : MonoBehaviour
     void Start()
     {
         RectTransform rect = GetComponent<RectTransform>();
-        Debug.Log("Left Panel Width      ----------------------------           " + rect.rect.width);
+//        Debug.Log("Left Panel Width      ----------------------------           " + rect.rect.width);
         float WIDTH = rect.rect.width;
         float HEIGHT = rect.rect.height;
         float start = rect.rect.height * 0.25f;
@@ -32,7 +32,7 @@ public class LeftPanel : MonoBehaviour
            
             TextMeshProUGUI lb = Instantiate(labelPrefab);
             lb.transform.SetParent(transform, false);
-            Debug.Log("Maximum Time : " + MAX_TIME);
+//            Debug.Log("Maximum Time : " + MAX_TIME);
             lb.text = ((i) * MAX_TIME / numberOfValues).ToString("0.00");
             RectTransform rr = lb.GetComponent<RectTransform>();
             lb.transform.position = new Vector3(timexPosition, startingOffSet + start + (i * accum),  0);
@@ -44,7 +44,7 @@ public class LeftPanel : MonoBehaviour
             float startingOffSet = i == 0 ? 5f : 0f;
             TextMeshProUGUI lb = Instantiate(labelPrefab);
             lb.transform.SetParent(transform, false);   
-            Debug.Log("affffffff " + ((i) * MAX_ACCURACY / numberOfValues).ToString());
+   //         Debug.Log("affffffff " + ((i) * MAX_ACCURACY / numberOfValues).ToString());
 
             lb.text = ((i) * MAX_ACCURACY / numberOfValues).ToString();
             lb.transform.position = new Vector3(accuracyXposition, startingOffSet + start + (i * accum), 0);
