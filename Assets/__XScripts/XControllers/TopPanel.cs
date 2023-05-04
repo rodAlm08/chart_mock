@@ -23,6 +23,7 @@ public class TopPanel : MonoBehaviour
     {
         StartDate = Bar_Chart_Controller.data[0].timestamp.value.getTimeStamp();
         EndDate = Bar_Chart_Controller.data[Bar_Chart_Controller.data.Length - 1].timestamp.value.getTimeStamp();
+        Debug.Log("StartDate: " + StartDate.ToString() + " - EndDate: " + EndDate.ToString());
         RectTransform[] objs = GetComponentsInChildren<RectTransform>();
         foreach(var obj in objs){
             if(obj.name == "DateSelection (1)")
@@ -97,13 +98,15 @@ public class TopPanel : MonoBehaviour
     private void UpdateDatePicker(TMP_Dropdown dropdown, DateTime date, Selection selection)
     {
         dropdown.ClearOptions();
-        dropdown.AddOptions(GetDays(date.Month, date.Year));
+        
         if (selection == Selection.DAY)
         {
+            dropdown.AddOptions(GetDays(date.Month, date.Year));
             dropdown.SetValueWithoutNotify(date.Day - 1);
         }
         else if (selection == Selection.MONTH)
         {
+            dropdown.AddOptions(GetMonths());
             dropdown.SetValueWithoutNotify(date.Month - 1);
         } else if(selection == Selection.YEAR)
         {
@@ -126,29 +129,43 @@ public class TopPanel : MonoBehaviour
                 day--;
             }
             StartDate = new DateTime(StartDate.Year, month, day);
-            UpdateDatePicker(FromDay, StartDate, select);
-            UpdateDatePicker(FromMonth, StartDate, select);
+            UpdateDatePicker(FromDay, StartDate, Selection.DAY);
+   //         UpdateDatePicker(FromMonth, StartDate, Selection.MONTH);
         } else if (select == Selection.YEAR)
         {
             int year = StartDate.Year + index;
             StartDate = new DateTime(year, StartDate.Month, StartDate.Year);
             UpdateDatePicker(FromYear, StartDate, select);
         }
+        Bar_Chart_Controller.instance.RedrawChat(StartDate, EndDate);
     }
     private void ToDateSelectionChanged(Selection select, int index)
     {
         if (select == Selection.DAY)
         {
-
+            int day = index + 1;
+            EndDate = new DateTime(EndDate.Year, EndDate.Month, day);
+            UpdateDatePicker(ToDay, EndDate, select);
         }
         else if (select == Selection.MONTH)
         {
-
+            int month = index + 1;
+            int day = EndDate.Day;
+            while(day > GetNumberOfDays(month, EndDate.Year))
+            {
+                day--;
+            }
+            EndDate = new DateTime(EndDate.Year, month, day);
+            UpdateDatePicker(ToDay, EndDate, Selection.DAY);
+    //        UpdateDatePicker(ToMonth, EndDate, Selection.MONTH);
         }
         else if (select == Selection.YEAR)
         {
-
+            int year = EndDate.Year + index;
+            EndDate = new DateTime(year, EndDate.Month, EndDate.Year);
+            UpdateDatePicker(ToYear, EndDate, Selection.YEAR);
         }
+        Bar_Chart_Controller.instance.RedrawChat(StartDate, EndDate);
     }
 
     private void OrderByValueChanged(int index)

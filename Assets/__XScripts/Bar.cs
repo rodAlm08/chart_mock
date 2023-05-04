@@ -9,6 +9,9 @@ public class Bar : MonoBehaviour
     private GameObject bar;
     // Start is called before the first frame update
 
+
+
+
     void Start()
     {
 
@@ -22,6 +25,11 @@ public class Bar : MonoBehaviour
         transform.localScale += scaleChange;
     }
 
+    public void DestroyBar()
+    {
+        Bar_Chart_Controller.instance.ClearScreenEvent -= DestroyBar;
+        Destroy(gameObject);
+    }
  
 
     // Update is called once per frame

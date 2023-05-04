@@ -9,7 +9,7 @@ public class BottomPanel : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI labelPrefab;
     [SerializeField] private RawImage xTickPrefab;
-    void Start()
+    void OnEnable()
     {
         RectTransform rect = GetComponent<RectTransform>();
  
@@ -47,6 +47,8 @@ public class BottomPanel : MonoBehaviour
 
 
             lb.text = a + "-" +Bar_Chart_Controller.data[i].timestamp.value.getTimeStamp().ToString("yyyy");
+
+            Debug.Log("Sorted Values From BottomPanel: " + Bar_Chart_Controller.data[i].timestamp.value.getTimeStamp());
 
             //           lb.transform.position = new Vector3(start + (i * accum) - offset / 2f, HEIGHT - rr.rect.height * 1.5f, 0);
             lb.transform.position = new Vector3(x - (3.25f * barWidth), HEIGHT - rr.rect.height * 1.5f, 0);
