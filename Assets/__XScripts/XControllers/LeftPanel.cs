@@ -8,7 +8,8 @@ using UnityEngine.UI;
 public class LeftPanel : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI labelPrefab;
-  //  [SerializeField] private RawImage yTickPrefab;
+    TextMeshProUGUI[] AccLabels, TimeLabels;
+    //  [SerializeField] private RawImage yTickPrefab;
     void Start()
     {
         RectTransform rect = GetComponent<RectTransform>();
@@ -23,6 +24,8 @@ public class LeftPanel : MonoBehaviour
         float MAX_ACCURACY = 100;
         float accuracyXposition = 0.25f * WIDTH;
         float timexPosition = 0.75f * WIDTH;
+        AccLabels = new TextMeshProUGUI[numberOfValues + 1];
+        TimeLabels = new TextMeshProUGUI[numberOfValues + 1];
 
         for (int i = 0; i < numberOfValues + 1; i++)
         {
@@ -33,6 +36,7 @@ public class LeftPanel : MonoBehaviour
             lb.text = ((i) * MAX_TIME / numberOfValues).ToString("0.00");
             RectTransform rr = lb.GetComponent<RectTransform>();
             lb.transform.position = new Vector3(timexPosition, startingOffSet + start + (i * accum),  0);
+            TimeLabels[i] = lb;
         }
         for (int i = 0; i < numberOfValues + 1; i++)
         {
@@ -41,8 +45,27 @@ public class LeftPanel : MonoBehaviour
             lb.transform.SetParent(transform, false);   
             lb.text = ((i) * MAX_ACCURACY / numberOfValues).ToString();
             lb.transform.position = new Vector3(accuracyXposition, startingOffSet + start + (i * accum), 0);
-          
+            AccLabels[i] = lb;
+        }
+        Bar_Chart_Controller.instance.RefreshLabelEvent += InitLabels;
+    }
+    private void OnDisable()
+    {
+        Bar_Chart_Controller.instance.RefreshLabelEvent -= InitLabels;
+    }
 
+    public void InitLabels()
+    {
+        float MAX_TIME = Bar_Chart_Controller.MAX_MIN_FM_AVG_TRK_TIME.x;
+        float MAX_ACCURACY = 100;
+        int numberOfValues = 10;
+        for (int i = 0; i < TimeLabels.Length; i++)
+        {
+            TimeLabels[i].text = ((i) * MAX_TIME / numberOfValues).ToString("0.00");
+        }
+        for (int i = 0; i < AccLabels.Length; i++)
+        {
+            AccLabels[i].text = ((i) * MAX_ACCURACY / numberOfValues).ToString();
         }
     }
 }

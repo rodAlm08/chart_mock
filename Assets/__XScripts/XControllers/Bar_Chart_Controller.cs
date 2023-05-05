@@ -14,6 +14,7 @@ using UnityEngine.UIElements;
 using System.Linq;
 using UnityEditor.Experimental.GraphView;
 using Unity.VisualScripting;
+using TMPro;
 
 public class Bar_Chart_Controller : MonoBehaviour
 {
@@ -49,6 +50,15 @@ public class Bar_Chart_Controller : MonoBehaviour
     {
         ClearScreenEvent?.Invoke();
     }
+
+    public delegate void RefreshLabel();
+    public RefreshLabel RefreshLabelEvent;
+    protected void OnLabelsChanged()
+    {
+        RefreshLabelEvent?.Invoke();
+    }
+    
+  
 
 
 
@@ -389,10 +399,11 @@ public class Bar_Chart_Controller : MonoBehaviour
 
     public void RedrawChat(DateTime StartDate, DateTime EndDate)
     {
-        OnScreenCleared();
         LoadData();
         DictData = GetTestData(fineMotorJson, StartDate, EndDate);
+        OnScreenCleared();
         DrawCharts();
+        OnLabelsChanged();
     }
 
     public const int FM_AVG_TRACK_TIME = 0, FM_AVERAGE_DISTANCE = 1, AUDIO_THRESHOLD = 2, VISUAL_SHOT_ACC = 3, VISUAL_TARGET_ACC = 4;
