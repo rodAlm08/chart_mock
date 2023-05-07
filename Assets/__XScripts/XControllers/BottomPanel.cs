@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,9 +11,17 @@ public class BottomPanel : MonoBehaviour
     [SerializeField] private TextMeshProUGUI labelPrefab;
     [SerializeField] private RawImage xTickPrefab;
     private TextMeshProUGUI[] Labels;
+    private Toggle[] Selectables;
     private RawImage[] Ticks;
     void OnEnable()
     {
+        Selectables = GetComponentsInChildren<Toggle>();
+        for(int i = 0; i < Selectables.Length; i++)
+        {
+            int j = i;
+            Selectables[i].onValueChanged.AddListener((selected) => { ToggleSwitched(selected, j); });
+        }
+        
         RectTransform rect = GetComponent<RectTransform>();
  
         float WIDTH = rect.rect.width * 0.8f;
@@ -69,7 +78,8 @@ public class BottomPanel : MonoBehaviour
         float gap = barWidth;
         float offset = accum / 2;
         Labels = new TextMeshProUGUI[Bar_Chart_Controller.data.Length];
-        Ticks = new RawImage[Bar_Chart_Controller.data.Length]; for (int i = 0; i < Labels.Length; i++)
+        Ticks = new RawImage[Bar_Chart_Controller.data.Length]; 
+        for (int i = 0; i < Labels.Length; i++)
         {
             float x = (3 * barWidth) * (i + 1) + gap * i + start;
             TextMeshProUGUI lb = Instantiate(labelPrefab);
@@ -85,6 +95,18 @@ public class BottomPanel : MonoBehaviour
             lr.transform.position = new Vector3(x, HEIGHT - (lr.GetComponent<RectTransform>().rect.width / 2f) * lr.transform.localScale.x, 0);
             Labels[i] = lb;
             Ticks[i] = lr;
+        }
+    }
+
+    private void ToggleSwitched(bool selected, int index) {
+        if(Bar_Chart_Controller.instance.ToggleBar(selected, index))
+        {
+            Bar_Chart_Controller.instance.RedrawChart(null, null);
+        }
+        else
+        {
+            Bar_Chart_Controller.instance.ToggleBar(!selected, index);
+            Selectables[index].SetIsOnWithoutNotify(!selected);
         }
     }
 

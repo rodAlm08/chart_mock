@@ -20,7 +20,7 @@ public class LeftPanel : MonoBehaviour
         int numberOfValues = 10;
         float accum = HEIGHT * 0.7f / (numberOfValues);
         float offset = 0;// accum / 2;
-        float MAX_TIME = Bar_Chart_Controller.MAX_MIN_FM_AVG_TRK_TIME.x;
+        float MAX_TIME = Bar_Chart_Controller.instance.TimeMaxMin.x; // Bar_Chart_Controller.MAX_MIN_FM_AVG_TRK_TIME.x;
         float MAX_ACCURACY = 100;
         float accuracyXposition = 0.25f * WIDTH;
         float timexPosition = 0.75f * WIDTH;
@@ -56,7 +56,7 @@ public class LeftPanel : MonoBehaviour
 
     public void InitLabels()
     {
-        float MAX_TIME = Bar_Chart_Controller.MAX_MIN_FM_AVG_TRK_TIME.x;
+        float MAX_TIME = Bar_Chart_Controller.instance.TimeMaxMin.x; //Bar_Chart_Controller.MAX_MIN_FM_AVG_TRK_TIME.x;
         float MAX_ACCURACY = 100;
         int numberOfValues = 10;
         for (int i = 0; i < TimeLabels.Length; i++)

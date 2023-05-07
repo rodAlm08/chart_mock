@@ -21,10 +21,10 @@ public class RightPanel : MonoBehaviour
         int numberOfValues = 10;
         float accum = HEIGHT * 0.7f / (numberOfValues);
         float offset = 0;// accum / 2;
-        float MAX_AVG_DISTANCE = Bar_Chart_Controller.MAX_MIN_FM_AVG_DST.x;
+        float MAX_AVG_DISTANCE = Bar_Chart_Controller.instance.DistanceMaxMin.x; // Bar_Chart_Controller.MAX_MIN_FM_AVG_DST.x;
 
-        float MIN_SOUND = Bar_Chart_Controller.MAX_MIN_AUDIO_THRESH.y;
-        float MAX_SOUND = Bar_Chart_Controller.MAX_MIN_AUDIO_THRESH.x;
+        float MIN_SOUND = Bar_Chart_Controller.instance.SoundMaxMin.y;// Bar_Chart_Controller.MAX_MIN_AUDIO_THRESH.y;
+        float MAX_SOUND = Bar_Chart_Controller.instance.SoundMaxMin.x;// Bar_Chart_Controller.MAX_MIN_AUDIO_THRESH.x;
 
         float avgDistanceXposition = transform.position.x - WIDTH / 2f + 0.25f * WIDTH;//9.25f * WIDTH;
         float audioxPosition = transform.position.x - WIDTH / 2f + 0.75f * WIDTH;//9.75f * WIDTH;
@@ -62,9 +62,9 @@ public class RightPanel : MonoBehaviour
     public void InitLabels()
     {
         int numberOfValues = 10;
-        float MAX_AVG_DISTANCE = Bar_Chart_Controller.MAX_MIN_FM_AVG_DST.x;
-        float MIN_SOUND = Bar_Chart_Controller.MAX_MIN_AUDIO_THRESH.y;
-        float MAX_SOUND = Bar_Chart_Controller.MAX_MIN_AUDIO_THRESH.x;
+        float MAX_AVG_DISTANCE = Bar_Chart_Controller.instance.DistanceMaxMin.x;// Bar_Chart_Controller.MAX_MIN_FM_AVG_DST.x;
+        float MIN_SOUND = Bar_Chart_Controller.instance.SoundMaxMin.y;// Bar_Chart_Controller.MAX_MIN_AUDIO_THRESH.y;
+        float MAX_SOUND = Bar_Chart_Controller.instance.SoundMaxMin.x;// Bar_Chart_Controller.MAX_MIN_AUDIO_THRESH.x;
         for (int i = 0; i < DistanceLabels.Length; i++)
         {
             DistanceLabels[i].text = ((i) * MAX_AVG_DISTANCE / numberOfValues).ToString("0.00");

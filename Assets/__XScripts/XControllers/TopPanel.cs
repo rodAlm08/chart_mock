@@ -137,7 +137,7 @@ public class TopPanel : MonoBehaviour
             StartDate = new DateTime(year, StartDate.Month, StartDate.Year);
             UpdateDatePicker(FromYear, StartDate, select);
         }
-        Bar_Chart_Controller.instance.RedrawChat(StartDate, EndDate);
+        Bar_Chart_Controller.instance.RedrawChart(StartDate, EndDate);
     }
     private void ToDateSelectionChanged(Selection select, int index)
     {
@@ -165,7 +165,7 @@ public class TopPanel : MonoBehaviour
             EndDate = new DateTime(year, EndDate.Month, EndDate.Year);
             UpdateDatePicker(ToYear, EndDate, Selection.YEAR);
         }
-        Bar_Chart_Controller.instance.RedrawChat(StartDate, EndDate);
+        Bar_Chart_Controller.instance.RedrawChart(StartDate, EndDate);
     }
 
     private void OrderByValueChanged(int index)
