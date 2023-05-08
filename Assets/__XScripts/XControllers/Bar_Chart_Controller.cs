@@ -85,161 +85,6 @@ public class Bar_Chart_Controller : MonoBehaviour
         DictData = GetTestData(fineMotorJson);
         LoadMaxMin();
         DrawCharts();
-        /*       
-
-               Vector2 minMax = getMaximumAndMinimum(Bar_Chart_Controller.data, FM_AVG_TRACK_TIME);
-
-               lineRendererFMAcc = fmAccLine.GetComponent<LineRenderer>();
-               lineRendererAvgDist = fmAvgDistLine.GetComponent<LineRenderer>();
-               lineRendererAudioThresh = audioThreshLine.GetComponent<LineRenderer>();
-               lineRendererVisualShotAcc = visualShotAccLine.GetComponent<LineRenderer>();
-               lineRendererVisualTargetAcc = visualTargetAccLine.GetComponent<LineRenderer>();
-
-
-               float maxValue = minMax.x;
-               float minValue = minMax.y;
-
-               float startX = -WIDTH / 2f;
-               float startY = 0;
-               float accum = startX;
-
-               float maxDisplayable = 52f;
-
-               float barWidth = WIDTH / (4 * maxDisplayable - 1) * (maxDisplayable / DictData.Count);
-               gap = barWidth;
-
-               float lineThickness = 2.5f * (maxDisplayable / DictData.Count);
-
-               Debug.Log("Width: " + WIDTH + " Nmax: " + maxDisplayable + " barWidth: " + barWidth + " Space: " + gap + " Number to display: " + DictData.Count);
-               int i = -1;
-               int j = -1;
-               int k = -1;
-               int l = -1;
-               int m = -1;
-               List<Vector3> accPositions = new List<Vector3>();
-               List<Vector3> avgDistPositions = new List<Vector3>();
-               List<Vector3> minSoundPositions = new List<Vector3>();
-               List<Vector3> visualShotAccPos = new List<Vector3>();
-               List<Vector3> visualTargetAccPos = new List<Vector3>();
-
-               foreach (KeyValuePair<DateTime, TestsBoxer> pair in DictData)
-               {
-                   DateTime timestamp = pair.Key;
-
-                   if (pair.Value.fineMotor != null)
-                   {
-                       double accuracy = pair.Value.fineMotor.accuracy;
-                       double avgDistance = pair.Value.fineMotor.avgDistanceFromPlayer;
-                       Vector2 mnmx = getMaximumAndMinimum(Bar_Chart_Controller.data, FM_AVERAGE_DISTANCE);
-                       float mn = mnmx.y;
-                       float mx = mnmx.x;
-                       if (accuracy > Mathf.Epsilon)
-                       {
-                           i++;
-                           startY = 0;
-                           float fmAccLineHeight = (float)(accuracy / 100 * HEIGHT);
-                           Vector3 pos = new Vector3(startY + accum, fmAccLineHeight, 0);
-                           accPositions.Add(pos);
-                           lineRendererFMAcc.positionCount = i + 1;
-                       }
-                       if (avgDistance > Mathf.Epsilon)
-                       {
-                           startY = mn * -1;
-                           float fmAvgDistLineHeight = startY + mn + HEIGHT * (float)(avgDistance - mn) / (mx - mn);
-                           j++;
-                           Vector3 avgD = new Vector3(accum, fmAvgDistLineHeight, 0);
-                           avgDistPositions.Add(avgD);
-                           lineRendererAvgDist.positionCount = j + 1;
-                       }
-                       double avgTrackingTime = pair.Value.fineMotor.avgTrackingTime;
-                       float barHeight = (float)(HEIGHT * (avgTrackingTime - minValue) / (maxValue - minValue));
-                       Bar value = Instantiate(bar);
-                       value.GetComponent<Renderer>().material.color = Color.red;
-                       value.SetDimension(new Vector3(barWidth, barHeight, 0.25f));
-                       value.gameObject.transform.position = new Vector3(accum + value.gameObject.transform.localScale.x / 2,
-                       value.gameObject.transform.position.y + value.gameObject.transform.localScale.y / 2,
-                                                                       value.gameObject.transform.position.z);
-                   }
-                   accum += barWidth;
-                   if (pair.Value.audio != null)
-                   {
-                       double minSoundThresh = pair.Value.audio.minSoundThreshold;
-                       minMax = getMaximumAndMinimum(Bar_Chart_Controller.data, AUDIO_THRESHOLD);
-                       float min = minMax.y;
-                       float max = minMax.x;
-                       startY = min * -1;
-                       if (true)
-                       {
-                           float audioThreshLineHeight = startY + min + HEIGHT * (float)(minSoundThresh - min) / (max - min);
-                           k++;
-                           Vector3 thresh = new Vector3(accum, audioThreshLineHeight, 0);
-                           minSoundPositions.Add(thresh);
-                           lineRendererAudioThresh.positionCount = k + 1;
-                       }
-                       double avgResponseTime = pair.Value.audio.avgResponseTime / 1000;
-                       float barHeight = (float)(HEIGHT * (avgResponseTime - minValue) / (maxValue - minValue));
-                       Bar value = Instantiate(bar);
-                       value.GetComponent<Renderer>().material.color = Color.yellow;
-                       value.SetDimension(new Vector3(barWidth, barHeight, 0.25f));
-                       value.gameObject.transform.position = new Vector3(accum + value.gameObject.transform.localScale.x / 2,
-                       value.gameObject.transform.position.y + value.gameObject.transform.localScale.y / 2,
-                                                                       value.gameObject.transform.position.z);
-                   }
-                   accum += barWidth;
-                   if (pair.Value.visual != null)
-                   {
-                       double visualShotAcc = pair.Value.visual.shotAccuracy;
-                       if (visualShotAcc > Mathf.Epsilon)
-                       {
-                           startY = 0;
-                           float visualShotAccHeight = (float)(visualShotAcc / 100 * HEIGHT);
-
-                           l++;
-                           Vector3 shotAcc = new Vector3(accum, visualShotAccHeight, 0);
-                           visualShotAccPos.Add(shotAcc);
-                           lineRendererVisualShotAcc.positionCount = l + 1;
-                       }
-
-                       double visualTargetAcc = pair.Value.visual.targetAccuracy;
-                       if (visualTargetAcc > Mathf.Epsilon)
-                       {
-                           startY = 0;
-                           float visualTargetAccHeight = (float)(visualTargetAcc / 100 * HEIGHT);
-
-                           m++;
-                           Vector3 targetAcc = new Vector3(accum, visualTargetAccHeight, 0);
-                           visualTargetAccPos.Add(targetAcc);
-                           lineRendererVisualTargetAcc.positionCount = m + 1;
-                       }
-
-                       if (pair.Value.visual.responseTimes != null)
-                       {
-                           double avgResponseTime = pair.Value.visual.getAverageResponseTime();
-                           float barHeight = (float)(HEIGHT * (avgResponseTime - minValue) / (maxValue - minValue));
-                           Bar value = Instantiate(bar);
-                           value.GetComponent<Renderer>().material.color = Color.blue;
-                           value.SetDimension(new Vector3(barWidth, barHeight, 0.25f));
-                           value.gameObject.transform.position = new Vector3(accum + value.gameObject.transform.localScale.x / 2,
-                           value.gameObject.transform.position.y + value.gameObject.transform.localScale.y / 2,
-                                                                           value.gameObject.transform.position.z);
-                       }
-
-                   }
-                   //           accum += barWidth;
-                   accum += (barWidth + gap);
-               }
-               lineRendererFMAcc.SetWidth(lineThickness, lineThickness);
-               lineRendererAvgDist.SetWidth(lineThickness, lineThickness);
-               lineRendererAudioThresh.SetWidth(lineThickness, lineThickness);
-               lineRendererVisualShotAcc.SetWidth(lineThickness, lineThickness);
-               lineRendererVisualTargetAcc.SetWidth(lineThickness, lineThickness);
-
-               lineRendererFMAcc.SetPositions(accPositions.ToArray());
-               lineRendererAvgDist.SetPositions(avgDistPositions.ToArray());
-               lineRendererAudioThresh.SetPositions(minSoundPositions.ToArray());
-               lineRendererVisualShotAcc.SetPositions(visualShotAccPos.ToArray());
-               lineRendererVisualTargetAcc.SetPositions(visualTargetAccPos.ToArray());
-       */
     }
 
     private void LoadData()
@@ -253,51 +98,69 @@ public class Bar_Chart_Controller : MonoBehaviour
 
     private void LoadMaxMin()
     {
+        bool FMBar = (Bar_Selection >> 2) == 1;
+        bool VisualBar = ((Bar_Selection & 3) >> 1) == 1;
+        bool AudioBar = (Bar_Selection & 1) == 1;
         Vector2 fmTime = GetMaximumMinimum((TestsBoxer[])Bar_Chart_Controller.data.Clone(), FM_AVG_TRK_TME);
         Debug.Log("%%FMTIME: " + fmTime);
         Vector2 audioTime = GetMaximumMinimum((TestsBoxer[])Bar_Chart_Controller.data.Clone(), AUDIO_RSP_TME);
         Debug.Log("%%AudioTime: :" + audioTime);
         Vector2 visualTime = GetMaximumMinimum((TestsBoxer[])Bar_Chart_Controller.data.Clone(), VISUAL_AVG_TRK_TME);
         Debug.Log("%%Visual time: " + visualTime);
-        TimeMaxMin = new Vector2(Mathf.Max(fmTime.x, audioTime.x / 1000, visualTime.x), Mathf.Min(fmTime.y, audioTime.y / 1000, visualTime.y));
+        TimeMaxMin = new Vector2(Mathf.Max(FMBar ? fmTime.x : 0, AudioBar ? audioTime.x / 1000 : 0, VisualBar ? visualTime.x : 0), Mathf.Min(fmTime.y, audioTime.y / 1000, visualTime.y));
         Debug.Log("%%TimeMaxMin: " + TimeMaxMin);
         DistanceMaxMin = GetMaximumMinimum((TestsBoxer[])Bar_Chart_Controller.data.Clone(), FM_AVG_DST);
         Debug.Log("%%Distance MaxMin: " + DistanceMaxMin);
         SoundMaxMin = GetMaximumMinimum((TestsBoxer[])Bar_Chart_Controller.data.Clone(), AUDIO_TSH);
         Debug.Log("%%SoundMaxMin: " + SoundMaxMin);
     }
-    private int NumberOfBars = 3;
-    private int Selection = 0b111;
+ //   private int NumberOfBars = 3;
+    private int Bar_Selection = 0b111;
+    private int Line_Selection = 0b11111;
+    const int DRAW_FMACC = 0, DRAW_AUDIOMST = 1, DRAW_VISUALACC = 2, DRAW_FMDST = 3, DRAW_VISUALTGTACC = 4;
+    private void SetBit(ref int Selector, int bit_size, int bit_index, bool value)
+    {
+        int Joiner = (int)Math.Pow(2, bit_size - bit_index - 1);
+        Selector = value ? Selector | Joiner : Selector ^ Joiner;
+    }
+
+    private bool IsSet(int Selector, int bit_size, int bit_index)
+    {
+        return (Selector >> (bit_size - bit_index - 1) & 1) == 1;
+    }
+
+    private int GetCount(int Selector, int bit_size)
+    {
+        int Count = 0;
+        for(int i = 0; i < bit_size; i++)
+        {
+            Count += (Selector >> (bit_size - i - 1) & 1);
+        }
+        return Count;
+    }
 
     public bool ToggleBar(bool selected, int index)
     {
         if (index < 3)
         {
-            int Joiner = (int)Math.Pow(2, 2 - index);
-            if (selected) {
-                Selection |= Joiner;
-                //Selection >> (3 - index - 1);
-                NumberOfBars++; 
-            }
-            else
-            {
-                Joiner = (int)(Math.Pow(2, (2 - index)) - 1);
-                Selection &= Joiner;
-                NumberOfBars--;
-            }
-            Debug.Log("NumberOfBars: " + NumberOfBars);
-            return NumberOfBars > 0;
+            SetBit(ref Bar_Selection, 3, index, selected);
+            return GetCount(Bar_Selection, 3) > 0;
         }
-        return true;
+        else
+        {
+            int i = index - 3;
+            SetBit(ref Line_Selection, 5, i, selected);
+            Debug.Log("Line Selection: " + Line_Selection.ToBinaryString());
+            return true;
+        }
     }
     public void DrawCharts()
     {
-        bool FMBar = (Selection >> 2) == 1;
-        bool AudioBar = ((Selection & 3) >> 1) == 1;
-        bool VisualBar = (Selection & 1) == 1;
-        Debug.Log("WHat are you ??????????????? " + data + " Size " + data.Length + " Compared: " + fineMotorJson.player.Length + " And " + DictData.Count);
+        bool FMBar = IsSet(Bar_Selection, 3, 0);// (Bar_Selection >> 2) == 1;
+        bool VisualBar = IsSet(Bar_Selection, 3, 1); //((Bar_Selection & 3) >> 1) == 1;
+        bool AudioBar = IsSet(Bar_Selection, 3, 2); //(Bar_Selection & 1) == 1;
         Vector2 minMax = TimeMaxMin;// getMaximumAndMinimum((TestsBoxer[])Bar_Chart_Controller.data.Clone(), FM_AVG_TRK_TME);
-        int numberOfBar = NumberOfBars;
+        int numberOfBar = GetCount(Bar_Selection, 3);
         float maxValue = minMax.x;
         float minValue = minMax.y;
         float startX = -WIDTH / 2f;
@@ -321,10 +184,19 @@ public class Bar_Chart_Controller : MonoBehaviour
         List<Vector3> visualShotAccPos = new List<Vector3>();
         List<Vector3> visualTargetAccPos = new List<Vector3>();
         lineRendererFMAcc = fmAccLine.GetComponent<LineRenderer>();
+        lineRendererFMAcc.enabled = IsSet(Line_Selection, 5, DRAW_FMACC);
+
         lineRendererAvgDist = fmAvgDistLine.GetComponent<LineRenderer>();
+        lineRendererAvgDist.enabled = IsSet(Line_Selection, 5, DRAW_FMDST);
+
         lineRendererAudioThresh = audioThreshLine.GetComponent<LineRenderer>();
+        lineRendererAudioThresh.enabled = IsSet(Line_Selection, 5, DRAW_AUDIOMST);
+
         lineRendererVisualShotAcc = visualShotAccLine.GetComponent<LineRenderer>();
+        lineRendererVisualShotAcc.enabled = IsSet(Line_Selection, 5, DRAW_VISUALACC);
+
         lineRendererVisualTargetAcc = visualTargetAccLine.GetComponent<LineRenderer>();
+        lineRendererVisualTargetAcc.enabled = IsSet(Line_Selection, 5, DRAW_VISUALTGTACC);
         foreach (KeyValuePair<DateTime, TestsBoxer> pair in DictData)
         {
             int BarIndex = 0;
@@ -337,7 +209,7 @@ public class Bar_Chart_Controller : MonoBehaviour
                 Vector2 mnmx = DistanceMaxMin;// getMaximumAndMinimum((TestsBoxer[])Bar_Chart_Controller.data.Clone(), FM_AVG_DST);
                 float mn = mnmx.y;
                 float mx = mnmx.x;
-                if (accuracy > Mathf.Epsilon)
+                if (IsSet(Line_Selection, 5, DRAW_FMACC) &&  accuracy > Mathf.Epsilon)
                 {
                     i++;
                     startY = 0; // Drawing will alway begin at point 0 (datum) for accuracy 0-100%
@@ -346,7 +218,7 @@ public class Bar_Chart_Controller : MonoBehaviour
                     accPositions.Add(pos);
                     lineRendererFMAcc.positionCount = i + 1;
                 }
-                if (avgDistance > Mathf.Epsilon)
+                if (IsSet(Line_Selection, 5, DRAW_FMDST) && avgDistance > Mathf.Epsilon)
                 {
                     startY = mn * -1; // Drawing will begin at the lowest value
                     float fmAvgDistLineHeight = startY + mn + HEIGHT * (float)(avgDistance - mn) / (mx - mn);
@@ -379,7 +251,7 @@ public class Bar_Chart_Controller : MonoBehaviour
                 float min = minMax.y;
                 float max = minMax.x;
                 startY = min * -1;
-                if (true)
+                if (IsSet(Line_Selection, 5, DRAW_AUDIOMST))
                 {
                     float audioThreshLineHeight = startY + min + HEIGHT * (float)(minSoundThresh - min) / (max - min);
                     k++;
@@ -407,7 +279,7 @@ public class Bar_Chart_Controller : MonoBehaviour
             if (pair.Value.visual != null)
             {
                 double visualShotAcc = pair.Value.visual.shotAccuracy;
-                if (visualShotAcc > Mathf.Epsilon)
+                if (IsSet(Line_Selection, 5, DRAW_VISUALACC) && visualShotAcc > Mathf.Epsilon)
                 {
                     startY = 0;
                     float visualShotAccHeight = (float)(visualShotAcc / 100 * HEIGHT);
@@ -419,7 +291,7 @@ public class Bar_Chart_Controller : MonoBehaviour
                 }
 
                 double visualTargetAcc = pair.Value.visual.targetAccuracy;
-                if (visualTargetAcc > Mathf.Epsilon)
+                if (IsSet(Line_Selection, 5, DRAW_VISUALTGTACC) && visualTargetAcc > Mathf.Epsilon)
                 {
                     startY = 0;
                     float visualTargetAccHeight = (float)(visualTargetAcc / 100 * HEIGHT);
@@ -454,18 +326,31 @@ public class Bar_Chart_Controller : MonoBehaviour
             accum += (BarIndex * barWidth + gap);
             //         accum += ((BarIndex + 1) * barWidth + gap);
         }
-        lineRendererFMAcc.SetWidth(lineThickness, lineThickness);
-        lineRendererAvgDist.SetWidth(lineThickness, lineThickness);
-        lineRendererAudioThresh.SetWidth(lineThickness, lineThickness);
-        lineRendererVisualShotAcc.SetWidth(lineThickness, lineThickness);
-        lineRendererVisualTargetAcc.SetWidth(lineThickness, lineThickness);
-
-        lineRendererFMAcc.SetPositions(accPositions.ToArray());
-        lineRendererAvgDist.SetPositions(avgDistPositions.ToArray());
-        lineRendererAudioThresh.SetPositions(minSoundPositions.ToArray());
-        lineRendererVisualShotAcc.SetPositions(visualShotAccPos.ToArray());
-        lineRendererVisualTargetAcc.SetPositions(visualTargetAccPos.ToArray());
-
+        if (IsSet(Line_Selection, 5, DRAW_FMACC))
+        {
+            lineRendererFMAcc.SetWidth(lineThickness, lineThickness);
+            lineRendererFMAcc.SetPositions(accPositions.ToArray());
+        }
+        if (IsSet(Line_Selection, 5, DRAW_FMDST))
+        {
+            lineRendererAvgDist.SetWidth(lineThickness, lineThickness);
+            lineRendererAvgDist.SetPositions(avgDistPositions.ToArray());
+        }
+        if (IsSet(Line_Selection, 5, DRAW_AUDIOMST))
+        {
+            lineRendererAudioThresh.SetWidth(lineThickness, lineThickness);
+            lineRendererAudioThresh.SetPositions(minSoundPositions.ToArray());
+        }
+        if (IsSet(Line_Selection, 5, DRAW_VISUALACC))
+        {
+            lineRendererVisualShotAcc.SetWidth(lineThickness, lineThickness);
+            lineRendererVisualShotAcc.SetPositions(visualShotAccPos.ToArray());
+        }
+        if (IsSet(Line_Selection, 5, DRAW_VISUALTGTACC))
+        {
+            lineRendererVisualTargetAcc.SetWidth(lineThickness, lineThickness);
+            lineRendererVisualTargetAcc.SetPositions(visualTargetAccPos.ToArray());
+        }
     }
     private DateTime StartDate, EndDate;
     public void RedrawChart(DateTime? StartDate, DateTime? EndDate)
@@ -480,6 +365,8 @@ public class Bar_Chart_Controller : MonoBehaviour
             this.StartDate = StartDate.Value;
             this.EndDate = EndDate.Value;
         }
+        Debug.Log("Start Date: " + StartDate + " End Date: " + EndDate);
+
         LoadData();
         DictData = GetTestData(fineMotorJson, StartDate.Value, EndDate.Value);
         LoadMaxMin();
@@ -546,13 +433,9 @@ public class Bar_Chart_Controller : MonoBehaviour
             case FM_ACC:
                 return new Vector2((float)boxer[0].fineMotor.accuracy, (float)boxer[boxer.Length - 1].fineMotor.accuracy);
             case FM_AVG_DST:
-                return new Vector2((float)boxer[0].fineMotor.avgDistanceFromPlayer, (float)boxer[boxer.Length - 1].fineMotor.avgDistanceFromPlayer); ;
+                return new Vector2((float)boxer[0].fineMotor.avgDistanceFromPlayer, (float)boxer[boxer.Length - 1].fineMotor.avgDistanceFromPlayer); 
             case FM_AVG_TRK_TME:
-                foreach (var box in boxer)
-                {
-                    Debug.Log("Spitting: " + box.fineMotor.avgTrackingTime);
-                }
-                return new Vector2((float)boxer[0].fineMotor.avgTrackingTime, (float)boxer[boxer.Length - 1].fineMotor.avgTrackingTime); ;
+                return new Vector2((float)boxer[0].fineMotor.avgTrackingTime, (float)boxer[^1].fineMotor.avgTrackingTime); 
             case AUDIO_RSP_TME:
                 return new Vector2((float)boxer[0].audio.avgResponseTime, (float)boxer[boxer.Length - 1].audio.avgResponseTime);
             case AUDIO_TSH:
@@ -643,7 +526,8 @@ public class Bar_Chart_Controller : MonoBehaviour
             dict.Add(boxers[i].timestamp.value.getTimeStamp(), boxers[i]);
         }
         Bar_Chart_Controller.data = dict.Values.ToArray();
-
+        StartDate = Bar_Chart_Controller.data[0].timestamp.value.getTimeStamp();
+        EndDate = Bar_Chart_Controller.data[^1].timestamp.value.getTimeStamp();
         return dict;
     }
 

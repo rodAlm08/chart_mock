@@ -13,6 +13,7 @@ public class BottomPanel : MonoBehaviour
     private TextMeshProUGUI[] Labels;
     private Toggle[] Selectables;
     private RawImage[] Ticks;
+    const int ORDER_TEST = 0, ORDER_DAY = 1, ORDER_WEEK = 2, ORDER_MONTH = 3, ORDER_YEAR = 4;
     void OnEnable()
     {
         Selectables = GetComponentsInChildren<Toggle>();
@@ -44,8 +45,9 @@ public class BottomPanel : MonoBehaviour
             RectTransform rr = lb.GetComponent<RectTransform>();           
             DateTime time = Bar_Chart_Controller.data[i].timestamp.value.getTimeStamp();
             int a = time.DayOfYear / 7;
-            lb.text = a + "-" +Bar_Chart_Controller.data[i].timestamp.value.getTimeStamp().ToString("yyyy");
-            lb.transform.position = new Vector3(x - (3.25f * barWidth), HEIGHT - rr.rect.height * 1.5f, 0);
+            //        lb.text = a + "-" +Bar_Chart_Controller.data[i].timestamp.value.getTimeStamp().ToString("yyyy");
+            lb.text = GetLabel(Bar_Chart_Controller.data[i].timestamp.value.getTimeStamp(), i, ORDER_TEST);
+            lb.transform.position = new Vector3(x - (5f * barWidth), HEIGHT - rr.rect.height * 2f, 0);
             RawImage lr = Instantiate(xTickPrefab);
             lr.transform.SetParent(transform, false);
             lr.transform.position = new Vector3(x, HEIGHT - (lr.GetComponent<RectTransform>().rect.width / 2f) * lr.transform.localScale.x, 0);
@@ -53,6 +55,30 @@ public class BottomPanel : MonoBehaviour
             Ticks[i] = lr;
         }
         Bar_Chart_Controller.instance.RefreshLabelEvent += InitLabels;
+    }
+    public string GetLabel(DateTime date, int index, int orderBy)
+    {
+        switch (orderBy)
+        {
+            case ORDER_TEST:
+                if(index == 0)
+                {
+                    return date.ToString("dd-MM-yyyy");
+                }
+                else
+                {
+                    DateTime previous = Bar_Chart_Controller.data[index - 1].timestamp.value.getTimeStamp();
+                    if(date.DayOfYear == previous.DayOfYear)
+                    {
+                        return date.ToString("hh:mm tt");
+                    }
+                    else
+                    {
+                        return date.ToString("dd-MM-yyy");
+                    }
+                }
+        }
+        return date.DayOfYear / 7 + "-" + date.ToString("yyyy");
     }
     private void OnDisable()
     {
@@ -87,8 +113,10 @@ public class BottomPanel : MonoBehaviour
             RectTransform rr = lb.GetComponent<RectTransform>();
             DateTime time = Bar_Chart_Controller.data[i].timestamp.value.getTimeStamp();
             int a = time.DayOfYear / 7;
-            lb.text = a + "-" + Bar_Chart_Controller.data[i].timestamp.value.getTimeStamp().ToString("yyyy");
-            lb.transform.position = new Vector3(x - (3.25f * barWidth), HEIGHT - rr.rect.height * 1.5f, 0);
+            //            lb.text = a + "-" + Bar_Chart_Controller.data[i].timestamp.value.getTimeStamp().ToString("yyyy");
+            lb.text = GetLabel(Bar_Chart_Controller.data[i].timestamp.value.getTimeStamp(), i, ORDER_TEST);
+
+            lb.transform.position = new Vector3(x - (5f * barWidth), HEIGHT - rr.rect.height * 2f, 0);
 
             RawImage lr = Instantiate(xTickPrefab);
             lr.transform.SetParent(transform, false);
